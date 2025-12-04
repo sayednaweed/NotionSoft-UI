@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../../utils/cn";
+import { buildNestedFiltersQuery, cn, useDebounce } from "../../utils/cn";
 import Input from "../input";
 import { Eraser, ListFilter, X } from "lucide-react";
 import CircleLoader from "../circle-loader";
@@ -11,15 +11,14 @@ export interface FilterItem {
   key: string;
   name: string;
 }
-
+interface ApiConfig {
+  url: string;
+  headers?: Record<string, string>;
+  params?: Record<string, any>;
+}
 // Generic Props
-export interface SearchInputProps<T = { id: string; name: string }>
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  fetch: (
-    value: string,
-    filters?: Record<string, boolean>,
-    maxFetch?: number
-  ) => Promise<T[]>;
+export interface BaseSearchInputProps<T = { id: string; name: string }>
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onSelect"> {
   renderItem?: (item: T) => React.ReactNode;
   itemOnClick?: (item: T) => void;
   filters?: FilterItem[];
@@ -35,6 +34,27 @@ export interface SearchInputProps<T = { id: string; name: string }>
   endContent?: React.ReactNode;
   STORAGE_KEY?: string;
 }
+
+// Either user provides `fetch` function...
+export interface FetchProps<T> extends BaseSearchInputProps<T> {
+  fetch: (
+    value: string,
+    filters?: Record<string, boolean>,
+    maxFetch?: number
+  ) => Promise<T[]>;
+  apiConfig?: never;
+}
+
+// ...or `apiConfig` object
+export interface ApiConfigProps<T> extends BaseSearchInputProps<T> {
+  fetch?: never;
+  apiConfig: ApiConfig;
+}
+
+// The final props type
+export type SearchInputProps<T = { id: string; name: string }> =
+  | FetchProps<T>
+  | ApiConfigProps<T>;
 
 // ✅ Generic forwardRef wrapper
 function SearchInputInner<T = { id: string; name: string }>(
@@ -53,6 +73,7 @@ function SearchInputInner<T = { id: string; name: string }>(
     },
     endContent,
     STORAGE_KEY = "FILTER_STORAGE_KEY",
+    apiConfig,
     itemOnClick,
     ...props
   }: SearchInputProps<T>,
@@ -90,26 +111,51 @@ function SearchInputInner<T = { id: string; name: string }>(
     const get = async () => {
       setIsFetching(true);
       try {
-        const data = await fetch(
-          debouncedValue,
-          filtersState,
-          maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
-        );
+        let data: T[] = [];
+
+        if (fetch) {
+          // User-provided fetch function
+          data = await fetch(
+            debouncedValue,
+            filtersState,
+            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
+          );
+        } else if (apiConfig) {
+          // Only include active filters
+          const activeFilters = Object.fromEntries(
+            Object.entries(filtersState).filter(([_, v]) => v)
+          );
+
+          // Build nested filters query
+          const filtersQuery = buildNestedFiltersQuery(activeFilters);
+
+          const combinedParams = new URLSearchParams({
+            q: debouncedValue,
+            maxFetch: maxFetch?.toString() ?? "",
+            ...apiConfig.params,
+          }).toString();
+
+          const url = `${apiConfig.url}?${combinedParams}${
+            filtersQuery ? "&" + filtersQuery : ""
+          }`;
+
+          const res = await window.fetch(url, {
+            headers: apiConfig.headers,
+          });
+          data = await res.json();
+        }
+
         setItems(data);
-      } catch (err) {
-        setItems([]);
+      } catch (err: any) {
         console.error(err);
+        setItems([]);
       } finally {
         setIsFetching(false);
       }
     };
-    if (
-      debouncedValue ||
-      debouncedValue === "" ||
-      Object.values(filtersState).some((v) => v)
-    )
-      get();
-  }, [debouncedValue, fetch, filtersState, maxFetch]);
+
+    get();
+  }, [debouncedValue, fetch, apiConfig, filtersState, maxFetch]);
 
   const updatePosition = () => {
     const el = containerRef.current;
@@ -245,16 +291,6 @@ const SearchInputForward = React.forwardRef(SearchInputInner) as <
 ) => React.ReactElement;
 
 export default SearchInputForward;
-
-/* Debounce Hook */
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-  return debouncedValue;
-}
 
 /* Dropdown */
 const Dropdown = <T,>(

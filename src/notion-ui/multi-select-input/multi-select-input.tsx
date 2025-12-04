@@ -6,23 +6,33 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../../utils/cn";
+import { buildNestedFiltersQuery, cn, useDebounce } from "../../utils/cn";
 import Input from "../input";
-import { Check, CheckCheck, Eraser, ListFilter, X } from "lucide-react";
+import { Check, Eraser, ListFilter, X } from "lucide-react";
 import CircleLoader from "../circle-loader";
 
 export interface FilterItem {
   key: string;
   name: string;
 }
+interface FetchConfig {
+  url: string;
+  headers?: Record<string, string>;
+  params?: string;
+}
 
-export interface MultiSelectInputProps<T = any>
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onSelect"> {
-  fetch: (
+export type MultiSelectInputProps<T = any> = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onSelect"
+> & {
+  // Either `fetch` function OR `apiConfig` must be provided
+  fetch?: (
     value: string,
     filters?: Record<string, boolean>,
     maxFetch?: number
   ) => Promise<T[]>;
+  apiConfig?: FetchConfig;
+
   renderItem?: (item: T, selected?: boolean) => React.ReactNode;
   filters?: FilterItem[];
   onFiltersChange?: (filtersState: Record<string, boolean>) => void;
@@ -41,7 +51,17 @@ export interface MultiSelectInputProps<T = any>
   searchBy?: keyof T | (keyof T)[];
   itemKey?: keyof T;
   STORAGE_KEY?: string;
-}
+} & (
+    | {
+        fetch: (
+          value: string,
+          filters?: Record<string, boolean>,
+          maxFetch?: number
+        ) => Promise<T[]>;
+        apiConfig?: any;
+      }
+    | { apiConfig: FetchConfig; fetch?: any }
+  );
 
 function MultiSelectInputInner<T = any>(
   {
@@ -64,6 +84,7 @@ function MultiSelectInputInner<T = any>(
     onItemsSelect,
     searchBy,
     itemKey,
+    apiConfig,
     ...props
   }: MultiSelectInputProps<T>,
   ref: React.Ref<HTMLInputElement>
@@ -107,25 +128,55 @@ function MultiSelectInputInner<T = any>(
 
   const debouncedValue = useDebounce(inputValue, debounceValue);
 
-  // Fetch items
   useEffect(() => {
     const get = async () => {
       setIsFetching(true);
       try {
-        const data = await fetch(
-          debouncedValue,
-          filtersState,
-          maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
-        );
+        let data: T[] = [];
+
+        if (fetch) {
+          // User-provided fetch function
+          data = await fetch(
+            debouncedValue,
+            filtersState,
+            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
+          );
+        } else if (apiConfig) {
+          // Only include active filters
+          const activeFilters = Object.fromEntries(
+            Object.entries(filtersState).filter(([_, v]) => v)
+          );
+
+          // Build nested filters query
+          const filtersQuery = buildNestedFiltersQuery(activeFilters);
+
+          const combinedParams = new URLSearchParams({
+            q: debouncedValue,
+            maxFetch: maxFetch?.toString() ?? "",
+            ...apiConfig.params,
+          }).toString();
+
+          const url = `${apiConfig.url}?${combinedParams}${
+            filtersQuery ? "&" + filtersQuery : ""
+          }`;
+
+          const res = await window.fetch(url, {
+            headers: apiConfig.headers,
+          });
+          data = await res.json();
+        }
+
         setItems(data);
-      } catch {
+      } catch (err: any) {
+        console.error(err);
         setItems([]);
       } finally {
         setIsFetching(false);
       }
     };
+
     get();
-  }, [debouncedValue, fetch, filtersState, maxFetch]);
+  }, [debouncedValue, fetch, apiConfig, filtersState, maxFetch]);
 
   // Update dropdown position
   const updatePosition = () => {
@@ -300,16 +351,6 @@ const MultiSelectInputForward = React.forwardRef(MultiSelectInputInner) as <
 ) => React.ReactElement;
 
 export default MultiSelectInputForward;
-
-// ---------------- Debounce Hook ----------------
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-  return debouncedValue;
-}
 
 // ---------------- Dropdown ----------------
 const Dropdown = <T,>(

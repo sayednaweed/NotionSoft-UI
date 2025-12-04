@@ -57,7 +57,6 @@ const fetchUsers = async (
 ) => {
   let result = mockUsers;
 
-  // Apply filters
   if (filters) {
     result = result.filter((user) =>
       Object.entries(filters).every(([key, value]) =>
@@ -66,7 +65,6 @@ const fetchUsers = async (
     );
   }
 
-  // Apply search
   if (query) {
     const q = query.toLowerCase();
     result = result.filter(
@@ -75,10 +73,8 @@ const fetchUsers = async (
     );
   }
 
-  // Apply maxFetch
   if (maxFetch) result = result.slice(0, maxFetch);
 
-  // Simulate network delay
   await new Promise((r) => setTimeout(r, 300));
 
   return result;
@@ -141,6 +137,28 @@ SingleSelection.args = {
   ],
   text: {
     fetch: "Loading users...",
+    notItem: "No users found",
+    maxRecord: "Max results",
+    clearFilters: "Clear Filters",
+  },
+};
+
+// ------------------ API Config story ------------------
+export const APIConfigExample = Template.bind({});
+APIConfigExample.args = {
+  apiConfig: {
+    url: "https://jsonplaceholder.typicode.com/users",
+    headers: { "Content-Type": "application/json" },
+  },
+  selectionMode: "multiple",
+  searchBy: ["name", "email"],
+  filters: [
+    { key: "active", name: "Active" },
+    { key: "admin", name: "Admin" },
+  ],
+  itemKey: "id", // JSONPlaceholder uses `id` as key
+  text: {
+    fetch: "Fetching users from API...",
     notItem: "No users found",
     maxRecord: "Max results",
     clearFilters: "Clear Filters",

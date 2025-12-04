@@ -120,7 +120,6 @@ function MultiSelectInputInner<T = any>(
   const [pendingSelection, setPendingSelection] = useState<T[] | T | null>(
     null
   );
-
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);

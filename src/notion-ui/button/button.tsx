@@ -24,9 +24,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         ref={ref}
         className={cn(
-          `rounded-sm cursor-pointer ltr:text-[13px] sm:ltr:text-sm rtl:text-[13px] sm:rtl:text-sm  rtl:font-semibold
-          transition w-fit
-            sm:px-4 py-1.5 leading-normal duration-200 ease-linear`,
+          `rounded-sm flex items-center gap-x-1 cursor-pointer font-medium ltr:text-xs leading-snug li rtl:text-[13px] sm:rtl:text-sm  rtl:font-semibold
+          transition w-fit px-3 py-1.5 duration-200 ease-linear`,
           style,
           disabled &&
             "opacity-35 pointer-events-none disabled:cursor-not-allowed",

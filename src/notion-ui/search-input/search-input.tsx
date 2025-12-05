@@ -1,8 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { buildNestedFiltersQuery, cn, useDebounce } from "../../utils/cn";
 import Input from "../input";
-import { Eraser, ListFilter, X } from "lucide-react";
+import { Eraser, ListFilter, LoaderCircle, X } from "lucide-react";
 import CircleLoader from "../circle-loader";
 
 export type NastranInputSize = "sm" | "md" | "lg";
@@ -24,6 +30,7 @@ export interface BaseSearchInputProps<T = { id: string; name: string }>
   filters?: FilterItem[];
   onFiltersChange?: (filtersState: Record<string, boolean>) => void;
   debounceValue?: number;
+  errorMessage?: string;
   parentClassName?: string;
   text?: {
     fetch?: string;
@@ -32,6 +39,7 @@ export interface BaseSearchInputProps<T = { id: string; name: string }>
     clearFilters?: string;
   };
   endContent?: React.ReactNode;
+  startContent?: React.ReactNode;
   STORAGE_KEY?: string;
 }
 
@@ -74,6 +82,8 @@ function SearchInputInner<T = { id: string; name: string }>(
     endContent,
     STORAGE_KEY = "FILTER_STORAGE_KEY",
     apiConfig,
+    errorMessage,
+    startContent,
     itemOnClick,
     ...props
   }: SearchInputProps<T>,
@@ -85,6 +95,7 @@ function SearchInputInner<T = { id: string; name: string }>(
   const [isFetching, setIsFetching] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
   const [items, setItems] = useState<T[]>([]);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   const [filtersState, setFiltersState] = useState<Record<string, boolean>>(
     () => {
@@ -93,6 +104,7 @@ function SearchInputInner<T = { id: string; name: string }>(
       return filters.reduce((acc, f) => ({ ...acc, [f.key]: false }), {});
     }
   );
+  const [dropDirection, setDropDirection] = useState<"down" | "up">("down");
 
   const [maxFetch, setMaxFetch] = useState<number | "">(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_MAX_FETCH`);
@@ -108,6 +120,8 @@ function SearchInputInner<T = { id: string; name: string }>(
 
   // Fetch items
   useEffect(() => {
+    if (!shouldFetch) return; // ⛔ skip until first focus
+
     const get = async () => {
       setIsFetching(true);
       try {
@@ -131,7 +145,7 @@ function SearchInputInner<T = { id: string; name: string }>(
 
           const combinedParams = new URLSearchParams({
             q: debouncedValue,
-            maxFetch: maxFetch?.toString() ?? "",
+            max: maxFetch?.toString() ?? "",
             ...apiConfig.params,
           }).toString();
 
@@ -141,6 +155,7 @@ function SearchInputInner<T = { id: string; name: string }>(
 
           const res = await window.fetch(url, {
             headers: apiConfig.headers,
+            credentials: "include",
           });
           data = await res.json();
         }
@@ -155,17 +170,45 @@ function SearchInputInner<T = { id: string; name: string }>(
     };
 
     get();
-  }, [debouncedValue, fetch, apiConfig, filtersState, maxFetch]);
-
+  }, [debouncedValue, fetch, apiConfig, filtersState, maxFetch, shouldFetch]);
+  useLayoutEffect(() => {
+    if (dropdownRef.current) {
+      updatePosition();
+    }
+  }, [items]);
   const updatePosition = () => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
-      width: rect.width,
-    });
+    const inputEl = containerRef.current;
+    const dropdownEl = dropdownRef.current;
+    if (!inputEl || !dropdownEl) return;
+
+    const rect = inputEl.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const gap = 4; // distance between input and dropdown
+
+    // Actual dropdown height based on content, capped at 260px
+    const dropdownHeight = Math.min(dropdownEl.offsetHeight || 0, 260);
+
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // Decide direction
+    if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+      // Flip above
+      setDropDirection("up");
+      setPosition({
+        top: rect.top + window.scrollY - dropdownHeight - gap,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    } else {
+      // Dropdown below
+      setDropDirection("down");
+      setPosition({
+        top: rect.bottom + window.scrollY + gap,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
   };
 
   useEffect(() => {
@@ -175,6 +218,10 @@ function SearchInputInner<T = { id: string; name: string }>(
       setIsFocused(true);
       setShowFilters(false);
       updatePosition();
+      // 🟢 First-time fetch trigger
+      if (!shouldFetch) {
+        setShouldFetch(true);
+      }
     };
     el.addEventListener("focus", handleFocus);
     return () => el.removeEventListener("focus", handleFocus);
@@ -233,6 +280,7 @@ function SearchInputInner<T = { id: string; name: string }>(
   const dropdown =
     isFocused || showFilters
       ? Dropdown(
+          dropDirection,
           position,
           isFetching,
           text,
@@ -258,9 +306,15 @@ function SearchInputInner<T = { id: string; name: string }>(
           {...props}
           value={inputValue}
           onChange={inputOnChange}
+          errorMessage={errorMessage}
+          startContent={startContent}
           endContent={
             <div className="flex items-center gap-1 relative ltr:-right-1 rtl:-left-1">
-              {isFocused && endIcon}
+              {!showFilters && isFetching ? (
+                <LoaderCircle className="size-[38px] p-3 animate-spin" />
+              ) : (
+                isFocused && endIcon
+              )}
               {filters.length != 0 && (
                 <ListFilter
                   onClick={() => {
@@ -294,6 +348,7 @@ export default SearchInputForward;
 
 /* Dropdown */
 const Dropdown = <T,>(
+  dropDirection: string,
   position: { top: number; left: number; width: number },
   isFetching: boolean,
   text: {
@@ -315,16 +370,15 @@ const Dropdown = <T,>(
   onFiltersChange?: (filtersState: Record<string, boolean>) => void,
   itemOnClick?: (item: T) => void
 ) =>
+  !isFetching &&
   createPortal(
     <div
       ref={dropdownRef}
-      className="absolute z-9999 border border-border rounded-b bg-card shadow-lg pt-3 pb-2"
-      style={{
-        top: position.top,
-        left: position.left,
-        width: position.width,
-        position: "absolute",
-      }}
+      className={cn(
+        "absolute z-50 border border-border bg-card shadow-lg pt-3 pb-2",
+        dropDirection === "down" ? "rounded-b" : "rounded-t"
+      )}
+      style={{ top: position.top, left: position.left, width: position.width }}
     >
       {showFilters && filters.length > 0 && (
         <div className="pb-3 px-3 flex flex-col gap-2 text-sm">
@@ -392,9 +446,6 @@ const Dropdown = <T,>(
           )}
         </div>
       )}
-
-      {!showFilters && isFetching && <CircleLoader label={text.fetch} />}
-
       {!showFilters && !isFetching && (
         <div className="max-h-60 overflow-auto">
           {items.length > 0 ? (

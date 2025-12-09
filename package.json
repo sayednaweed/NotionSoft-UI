@@ -1,6 +1,6 @@
 {
   "name": "notionsoft-ui",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "A React UI component installer (shadcn-style). Installs components directly into your project.",
   "bin": {
     "notionsoft-ui": "./cli/index.cjs"

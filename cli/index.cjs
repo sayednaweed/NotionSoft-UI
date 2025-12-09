@@ -137,13 +137,95 @@ program
     }
 
     // Copy as a flat file into user's project
-    const destFile = path.join(config.componentDir, component + ".tsx");
-    fs.ensureDirSync(config.componentDir);
-    fs.copyFileSync(templateFile, destFile);
+    // const destFile = path.join(config.componentDir, component + ".tsx");
+    // fs.ensureDirSync(config.componentDir);
+    // fs.copyFileSync(templateFile, destFile);
 
-    console.log(
-      chalk.green(`✓ Installed ${component} component as ${destFile}`)
-    );
+    // console.log(
+    //   chalk.green(`✓ Installed ${component} component as ${destFile}`)
+    // );
+    try {
+      const templateDir = path.join(__dirname, "../src/notion-ui", component);
+      const destDir = path.join(config.componentDir, component);
+
+      if (!fs.existsSync(templateDir)) {
+        console.log(chalk.red(`❌ Component '${component}' does not exist.`));
+        return;
+      }
+
+      // --- Step 1: Merge to utils ---
+      const utilsDir = path.join(cwd, "src/utils");
+      fs.ensureDirSync(utilsDir);
+
+      let mergeSuccess = true;
+
+      fs.readdirSync(templateDir).forEach((file) => {
+        const filePath = path.join(templateDir, file);
+        const content = fs.readFileSync(filePath, "utf-8").trim();
+
+        try {
+          let targetPath;
+          if (file.endsWith("-data.ts"))
+            targetPath = path.join(utilsDir, "dt.ts");
+          else if (file === "type.ts")
+            targetPath = path.join(utilsDir, "type.ts");
+          else if (file.startsWith("use-") && file.endsWith(".ts"))
+            targetPath = path.join(utilsDir, "hook.ts");
+          else return; // skip other files
+
+          let targetContent = "";
+          if (fs.existsSync(targetPath))
+            targetContent = fs.readFileSync(targetPath, "utf-8");
+
+          // Append only if content not already in the target file
+          if (!targetContent.includes(content)) {
+            if (targetContent.length > 0) targetContent += "\n\n";
+            targetContent += content;
+            fs.writeFileSync(targetPath, targetContent);
+            console.log(
+              chalk.green(
+                `✓ Merged ${file} → ${path.relative(cwd, targetPath)}`
+              )
+            );
+          } else {
+            console.log(
+              chalk.yellow(
+                `⚠ ${file} already exists in ${path.relative(
+                  cwd,
+                  targetPath
+                )}, skipping`
+              )
+            );
+          }
+        } catch (err) {
+          mergeSuccess = false;
+          console.log(chalk.red(`❌ Failed merging ${file}: ${err.message}`));
+        }
+      });
+
+      if (!mergeSuccess) {
+        console.log(
+          chalk.red(
+            "❌ Failed to merge required files. Component installation aborted."
+          )
+        );
+        return;
+      }
+
+      // --- Step 2: Copy component files ---
+      fs.copySync(templateDir, destDir, {
+        filter: (src) => {
+          const filename = path.basename(src);
+          if (filename === "index.ts") return false;
+          if (filename.endsWith(".stories.tsx")) return false;
+          return true;
+        },
+      });
+
+      console.log(chalk.green(`✓ Installed ${component} to ${destDir}`));
+    } catch (err) {
+      console.log(chalk.red(`❌ Installation failed: ${err.message}`));
+    }
   });
 
 /* ------------------------------

@@ -25,7 +25,6 @@ export interface DatePickerProps {
   };
   placeholder: string;
   place?: string;
-  required?: boolean;
   format?: string;
   requiredHint?: string;
   hintColor?: string;
@@ -42,7 +41,6 @@ export default function DatePicker(props: DatePickerProps) {
     className,
     classNames,
     placeholder,
-    required,
     requiredHint,
     measurement,
     label,

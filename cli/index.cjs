@@ -208,7 +208,8 @@ program
         file === "type.ts" ||
         file.endsWith("-data.ts") ||
         file.endsWith(".stories.tsx") ||
-        (file.startsWith("use-") && file.endsWith(".ts"))
+        (file.startsWith("use-") && file.endsWith(".ts")) ||
+        file === "utils.ts"
       )
         return;
 

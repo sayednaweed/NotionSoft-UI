@@ -129,9 +129,11 @@ program
     }
 
     const config = fs.readJSONSync(configFile);
-    const templateFile = getTemplateFile(component);
 
-    if (!fs.existsSync(templateFile)) {
+    // Make sure templateDir is defined here
+    const templateDir = path.join(__dirname, "../src/notion-ui", component);
+
+    if (!fs.existsSync(templateDir)) {
       console.log(chalk.red(`❌ Component '${component}' does not exist.`));
       return;
     }

@@ -129,8 +129,6 @@ program
     }
 
     const config = fs.readJSONSync(configFile);
-
-    // Make sure templateDir is defined here
     const templateDir = path.join(__dirname, "../src/notion-ui", component);
 
     if (!fs.existsSync(templateDir)) {
@@ -138,70 +136,59 @@ program
       return;
     }
 
-    // Copy as a flat file into user's project
-    // const destFile = path.join(config.componentDir, component + ".tsx");
-    // fs.ensureDirSync(config.componentDir);
-    // fs.copyFileSync(templateFile, destFile);
+    // Utility function to append content if not exists
+    const appendIfNotExist = (srcFile, destFile) => {
+      const srcContent = fs.readFileSync(srcFile, "utf-8");
 
-    // console.log(
-    //   chalk.green(`✓ Installed ${component} component as ${destFile}`)
-    // );
-    const utilsDir = path.join(cwd, "src/utils");
-    fs.ensureDirSync(utilsDir);
-
-    let mergeSuccess = true;
-
-    // --- Step 1: Merge utils ---
-    fs.readdirSync(templateDir).forEach((file) => {
-      const filePath = path.join(templateDir, file);
-      const content = fs.readFileSync(filePath, "utf-8").trim();
-
-      let targetPath;
-      if (file.endsWith("-data.ts")) targetPath = path.join(utilsDir, "dt.ts");
-      else if (file === "type.ts") targetPath = path.join(utilsDir, "type.ts");
-      else if (file.startsWith("use-") && file.endsWith(".ts"))
-        targetPath = path.join(utilsDir, "hook.ts");
-      else return; // skip other files
-
-      try {
-        let targetContent = "";
-        if (fs.existsSync(targetPath))
-          targetContent = fs.readFileSync(targetPath, "utf-8");
-
-        if (!targetContent.includes(content)) {
-          if (targetContent.length > 0) targetContent += "\n\n";
-          targetContent += content;
-          fs.writeFileSync(targetPath, targetContent);
-          console.log(
-            chalk.green(`✓ Merged ${file} → ${path.relative(cwd, targetPath)}`)
-          );
-        } else {
-          console.log(
-            chalk.yellow(
-              `⚠ ${file} already exists in ${path.relative(
-                cwd,
-                targetPath
-              )}, skipping`
-            )
-          );
-        }
-      } catch (err) {
-        mergeSuccess = false;
-        console.log(chalk.red(`❌ Failed merging ${file}: ${err.message}`));
+      if (fs.existsSync(destFile)) {
+        const destContent = fs.readFileSync(destFile, "utf-8");
+        const newLines = srcContent
+          .split("\n")
+          .filter((line) => !destContent.includes(line))
+          .join("\n");
+        if (newLines.trim()) fs.appendFileSync(destFile, "\n" + newLines);
+      } else {
+        fs.writeFileSync(destFile, srcContent);
       }
-    });
+    };
 
-    if (!mergeSuccess) {
-      console.log(
-        chalk.red(
-          "❌ Failed to merge required files. Component installation aborted."
-        )
-      );
-      return;
+    // Handle type.ts → src/utils/type.ts
+    const typeFile = path.join(templateDir, "type.ts");
+    if (fs.existsSync(typeFile)) {
+      const destTypeFile = path.join(cwd, "src/utils/type.ts");
+      appendIfNotExist(typeFile, destTypeFile);
+      console.log(chalk.green("✓ type.ts merged to src/utils/type.ts"));
     }
 
-    // --- Step 2: Copy remaining files flat into componentDir ---
-    fs.ensureDirSync(config.componentDir);
+    // Handle *-data.ts → src/utils/dt.ts
+    fs.readdirSync(templateDir)
+      .filter((f) => f.endsWith("-data.ts"))
+      .forEach((dataFile) => {
+        const srcDataFile = path.join(templateDir, dataFile);
+        const destDataFile = path.join(cwd, "src/utils/dt.ts");
+        appendIfNotExist(srcDataFile, destDataFile);
+        console.log(chalk.green(`✓ ${dataFile} merged to src/utils/dt.ts`));
+      });
+
+    // Handle use-*.ts → src/utils/hook.ts
+    fs.readdirSync(templateDir)
+      .filter((f) => f.startsWith("use-") && f.endsWith(".ts"))
+      .forEach((hookFile) => {
+        const srcHookFile = path.join(templateDir, hookFile);
+        const destHookFile = path.join(cwd, "src/utils/hook.ts");
+        appendIfNotExist(srcHookFile, destHookFile);
+        console.log(chalk.green(`✓ ${hookFile} merged to src/utils/hook.ts`));
+      });
+
+    // Handle utils.ts → src/utils/helper.ts
+    const utilsFile = path.join(templateDir, "utils.ts");
+    if (fs.existsSync(utilsFile)) {
+      const destUtilsFile = path.join(cwd, "src/utils/helper.ts");
+      appendIfNotExist(utilsFile, destUtilsFile);
+      console.log(chalk.green("✓ utils.ts merged to src/utils/helper.ts"));
+    }
+
+    // Copy remaining files (exclude index.ts, *.stories.tsx, type.ts, *-data.ts, use-*.ts, utils.ts)
     fs.readdirSync(templateDir).forEach((file) => {
       if (
         file === "index.ts" ||
@@ -215,6 +202,7 @@ program
 
       const srcFile = path.join(templateDir, file);
       const destFile = path.join(config.componentDir, file); // flat copy
+      fs.ensureDirSync(config.componentDir);
       fs.copyFileSync(srcFile, destFile);
     });
 

@@ -9,11 +9,13 @@ export type NastranInputSize = "sm" | "md" | "lg";
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
   requiredHint?: string;
   label?: string;
-  endContent?: React.ReactNode;
   errorMessage?: string;
-  parentClassName?: string;
+  classNames?: {
+    rootDivClassName?: string;
+  };
   measurement?: NastranInputSize;
 }
 
@@ -25,7 +27,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       requiredHint,
       startContent,
       endContent,
-      parentClassName = "",
+      classNames,
       measurement = "sm",
       errorMessage,
       label,
@@ -35,6 +37,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const hasError = !!errorMessage;
+    const { rootDivClassName } = classNames || {};
 
     const inputPaddingClass = startContent
       ? "rtl:pr-[42px] ltr:ps-[42px]"
@@ -45,7 +48,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         measurement == "lg"
           ? {
               height: "50px",
-              paddingBottom: "pb-[3px]",
               endContent: label
                 ? "ltr:top-[48px] rtl:top-[54px]-translate-y-1/2"
                 : "top-[26px] -translate-y-1/2",
@@ -57,7 +59,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           : measurement == "md"
           ? {
               height: "44px",
-              paddingBottom: "pb-[2px]",
               endContent: label
                 ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
                 : "top-[22px] -translate-y-1/2",
@@ -68,7 +69,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             }
           : {
               height: "40px",
-              paddingBottom: "pb-[2px]",
               endContent: label
                 ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
                 : "top-[20px] -translate-y-1/2",
@@ -79,8 +79,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             },
       [measurement, label]
     );
+    const readOnlyStyle = readOnly && "opacity-40";
+
     return (
-      <div className={cn(parentClassName, "flex w-full flex-col justify-end")}>
+      <div
+        className={cn(
+          rootDivClassName,
+          "flex w-full flex-col justify-end",
+          readOnlyStyle
+        )}
+      >
         <div
           className={cn(
             "relative text-start select-none h-fit rtl:text-lg-rtl ltr:text-lg-ltr"
@@ -145,20 +153,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               height: heightStyle.height,
             }}
             className={cn(
-              "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex w-full min-w-0 rounded border bg-transparent px-3 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 flex w-full min-w-0 rounded-sm border px-3 text-base transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70",
               "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-              "appearance-none placeholder:text-primary/60 ltr:text-sm rtl:text-sm rtl:font-semibold focus-visible:ring-0 focus-visible:shadow-sm focus-visible:ring-offset-0 transition-[border] bg-card dark:bg-black/30",
+              "appearance-none placeholder:text-primary/60 ltr:text-sm rtl:text-sm rtl:font-semibold focus-visible:ring-0 focus-visible:shadow-sm focus-visible:ring-offset-0 transition-[border] bg-card",
               "focus-visible:border-tertiary/60",
               "[&::-webkit-outer-spin-button]:appearance-none",
               "[&::-webkit-inner-spin-button]:appearance-none",
               "[-moz-appearance:textfield] ",
               inputPaddingClass,
-              hasError ? "border-red-400 border" : "border-primary/25",
-              readOnly && "cursor-not-allowed",
-              heightStyle.paddingBottom,
+              hasError && "border-red-400",
               className
             )}
             {...rest}
+            disabled={readOnly}
           />
         </div>
 

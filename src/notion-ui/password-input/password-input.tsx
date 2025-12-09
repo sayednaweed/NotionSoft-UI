@@ -1,5 +1,4 @@
-import Input from "../input";
-import { InputProps } from "../input/input";
+import Input, { InputProps } from "../input/input";
 import { Check, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
 type PasswordInputText = {
@@ -17,16 +16,36 @@ export interface PasswordInputProps extends InputProps {
   text: PasswordInputText;
 }
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-  (props, ref: any) => {
-    const { parentClassName, defaultValue, text, onChange, ...rest } = props;
-    const [value, setValue] = useState(
-      typeof defaultValue === "string" ? defaultValue : ""
-    );
-    const strength = checkStrength(value, text);
+  (props, ref) => {
+    const { classNames, value, text, onChange, ...rest } = props;
+    const { rootDivClassName } = classNames || {};
 
-    const strengthScore = useMemo(() => {
-      return passwordStrengthScore(strength);
-    }, [strength]);
+    // Internal state only if parent does NOT control value
+    const [password, setPassword] = useState(value ?? "");
+
+    // Use parent-controlled value if provided, otherwise internal state
+    const currentPassword = value !== undefined ? value : password;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (value === undefined) {
+        setPassword(e.target.value);
+      }
+      onChange?.(e);
+    };
+
+    const strength = useMemo(
+      () =>
+        checkStrength(
+          typeof currentPassword == "string" ? currentPassword : "",
+          text
+        ),
+      [currentPassword, text]
+    );
+
+    const strengthScore = useMemo(
+      () => passwordStrengthScore(strength),
+      [strength]
+    );
 
     const getStrengthColor = (score: number) => {
       if (score === 0) return "bg-border";
@@ -42,21 +61,18 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
       if (score === 3) return text.medium_password;
       return text.strong_password;
     };
+
     return (
-      <div className={`w-full ${parentClassName}`}>
+      <div className={`w-full ${rootDivClassName ?? ""}`}>
         <Input
-          value={value}
+          value={currentPassword}
           ref={ref}
-          onChange={
-            onChange
-              ? onChange
-              : (event: React.ChangeEvent<HTMLInputElement>) =>
-                  setValue(event.target.value)
-          }
+          onChange={handleChange}
           aria-invalid={strengthScore < 4}
           aria-describedby="password-strength"
           {...rest}
         />
+
         {/* Password strength indicator */}
         <div
           className="mb-4 mt-3 h-1 w-full overflow-hidden rounded-full bg-border"
@@ -71,10 +87,10 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
               strengthScore
             )} transition-all duration-500 ease-out`}
             style={{ width: `${(strengthScore / 4) * 100}%` }}
-          ></div>
+          />
         </div>
 
-        {/* Password strength description */}
+        {/* Password strength text */}
         <p
           id="password-strength"
           className="mb-2 text-start rtl:text-xl-rtl ltr:text-xl-ltr font-medium text-foreground"
@@ -82,22 +98,14 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           {`${getStrengthText(strengthScore)}. ${text.must_contain}`}
         </p>
 
-        {/* Password requirements list */}
+        {/* Requirements */}
         <ul className="space-y-1.5" aria-label="Password requirements">
           {strength.map((req, index) => (
             <li key={index} className="flex items-center gap-2">
               {req.met ? (
-                <Check
-                  size={16}
-                  className="text-emerald-500"
-                  aria-hidden="true"
-                />
+                <Check size={16} className="text-emerald-500" />
               ) : (
-                <X
-                  size={16}
-                  className="text-muted-foreground/80"
-                  aria-hidden="true"
-                />
+                <X size={16} className="text-muted-foreground/80" />
               )}
               <span
                 className={`ltr:text-xs rtl:text-lg-rtl ${
@@ -107,9 +115,6 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
                 }`}
               >
                 {req.text}
-                <span className="sr-only rtl:text-xl-rtl">
-                  {req.met ? " - Requirement met" : " - Requirement not met"}
-                </span>
               </span>
             </li>
           ))}

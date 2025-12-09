@@ -67,10 +67,9 @@ const VirtualList: React.FC<VirtualListProps> = ({
     </div>
   );
 };
-export type PhoneCountryPickerSize = "sm" | "md" | "lg";
+export type PhoneInputSize = "sm" | "md" | "lg";
 
-interface PhoneCountryPickerProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;
   label?: string;
   errorMessage?: string;
@@ -78,13 +77,13 @@ interface PhoneCountryPickerProps
     rootDivClassName?: string;
     iconClassName?: string;
   };
-  measurement?: PhoneCountryPickerSize;
+  measurement?: PhoneInputSize;
   ROW_HEIGHT?: number;
   VISIBLE_ROWS?: number;
   BUFFER?: number;
 }
 
-export const PhoneCountryPicker: React.FC<PhoneCountryPickerProps> = ({
+const PhoneInput: React.FC<PhoneInputProps> = ({
   measurement = "sm",
   errorMessage,
   label,
@@ -398,3 +397,4 @@ export const PhoneCountryPicker: React.FC<PhoneCountryPickerProps> = ({
     </div>
   );
 };
+export default PhoneInput;

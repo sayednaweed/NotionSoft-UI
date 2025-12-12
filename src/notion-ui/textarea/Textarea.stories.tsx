@@ -8,9 +8,7 @@ const meta: Meta<typeof Textarea> = {
     placeholder: "Write something...",
   },
 };
-
 export default meta;
-
 type Story = StoryObj<typeof Textarea>;
 
 // ---------------------------------------

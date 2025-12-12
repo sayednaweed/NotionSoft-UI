@@ -1,7 +1,7 @@
 import { defaultCountries } from "./country-data";
 import { LazyFlag } from "./lazy-flag";
 import type { ParsedCountry } from "./type";
-import { cn } from "@/utils/cn";
+import { cn } from "../../utils/cn";
 import React, {
   useState,
   useRef,
@@ -10,6 +10,7 @@ import React, {
   useMemo,
 } from "react";
 import { createPortal } from "react-dom";
+import AnimatedItem from "../animated-item";
 
 interface VirtualListProps {
   items: ParsedCountry[];
@@ -100,10 +101,19 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 }) => {
   const { rootDivClassName, iconClassName = "size-4" } = classNames || {};
   const [open, setOpen] = useState(false);
-  const [country, setCountry] = useState<ParsedCountry>(defaultCountries[0]);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+  const initialCountry = (() => {
+    if (typeof value === "string" && value.startsWith("+")) {
+      const matched = defaultCountries.find((c) =>
+        value.startsWith("+" + c.dialCode)
+      );
+      return matched || defaultCountries[0];
+    }
+    return defaultCountries[0];
+  })();
+  const [country, setCountry] = useState<ParsedCountry>(initialCountry);
   const [phone, setPhone] = useState<string>(
-    typeof value == "string" ? value : ""
+    typeof value === "string" ? value : `+${initialCountry.dialCode}`
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -118,6 +128,26 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const chooseCountry = (c: ParsedCountry) => {
     setCountry(c);
     setOpen(false);
+
+    setPhone((prev) => {
+      const oldDialRegex = new RegExp(`^\\+${country.dialCode}`);
+      const restNumber = prev.replace(oldDialRegex, "");
+      const newValue = `+${c.dialCode}${restNumber}`;
+      if (onChange && inputRef.current) {
+        const fakeEvent = {
+          target: {
+            ...inputRef.current,
+            name: inputRef.current.name,
+            value: newValue,
+          },
+        } as React.ChangeEvent<HTMLInputElement>;
+
+        onChange(fakeEvent);
+      }
+
+      return newValue;
+    });
+
     inputRef.current?.focus();
   };
 
@@ -244,39 +274,40 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       measurement == "lg"
         ? {
             height: "50px",
-            endContent: label
-              ? "ltr:top-[48px] rtl:top-[54px]-translate-y-1/2"
-              : "top-[26px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[48px] rtl:top-[54px] -translate-y-1/2"
-              : "top-[26px] -translate-y-1/2",
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           }
         : measurement == "md"
         ? {
             height: "44px",
-            endContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           }
         : {
             height: "40px",
-            endContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           },
     [measurement, label]
   );
   const readOnlyStyle = readOnly && "opacity-40";
 
+  const inputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    let name = e.target.name;
+
+    // Ensure dial code always at start
+    if (!val.startsWith(`+${country.dialCode}`)) {
+      val = `+${country.dialCode}${val.replace(/^\+\d*/, "")}`;
+    }
+
+    setPhone(val);
+    if (onChange) {
+      // emit event
+      const fakeEvent = {
+        ...e,
+        target: { ...e.target, name: name, value: val },
+      };
+      onChange(fakeEvent as React.ChangeEvent<HTMLInputElement>);
+    }
+  };
   return (
     <div
       className={cn(
@@ -329,11 +360,12 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         <input
           ref={inputRef}
           type="tel"
-          value={phone}
-          onChange={(e) => {
-            if (onChange) onChange(e);
-            setPhone(e.target.value);
-          }}
+          value={
+            phone.startsWith(`+${country.dialCode}`)
+              ? phone
+              : `+${country.dialCode}`
+          }
+          onChange={inputChanged}
           placeholder="Phone number"
           style={{
             height: heightStyle.height,
@@ -378,9 +410,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
               renderRow={(c, i) => (
                 <div
                   onClick={() => chooseCountry(c)}
-                  onMouseEnter={() => setHighlightedIndex(i)}
                   className={`flex ltr:text-sm rtl:text-sm rtl:font-semibold items-center gap-2 px-2 py-1 cursor-pointer ${
-                    i == highlightedIndex ? "bg-primary/5" : ""
+                    i == highlightedIndex && "bg-primary/5"
                   }`}
                   role="option"
                   aria-selected={i === highlightedIndex}
@@ -394,6 +425,31 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           </div>,
           document.body
         )}
+      {/* Error Message */}
+      {hasError && (
+        <AnimatedItem
+          springProps={{
+            from: {
+              opacity: 0,
+              transform: "translateY(-8px)",
+            },
+            config: {
+              mass: 1,
+              tension: 210,
+              friction: 20,
+            },
+            to: {
+              opacity: 1,
+              transform: "translateY(0px)",
+            },
+          }}
+          intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
+        >
+          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-sm-ltr">
+            {errorMessage}
+          </h1>
+        </AnimatedItem>
+      )}
     </div>
   );
 };

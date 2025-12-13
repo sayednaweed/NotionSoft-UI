@@ -383,6 +383,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           )}
           {...rest}
           disabled={readOnly}
+          dir="ltr"
         />
       </div>
 

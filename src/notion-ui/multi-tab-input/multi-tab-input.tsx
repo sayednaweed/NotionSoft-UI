@@ -3,13 +3,7 @@ import { cn } from "../../utils/cn";
 import AnimatedItem from "../animated-item";
 import type { TabState } from "../tab/tab";
 import Input, { NastranInputSize } from "../input/input";
-import Tab from "../tab/tab";
-
-// OptionalTabs wrapper
-export function OptionalTabs({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
-}
-OptionalTabs.displayName = "OptionalTabs";
+import { OptionalTabs, Tab } from "../tab/tab";
 
 export interface MultiTabInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

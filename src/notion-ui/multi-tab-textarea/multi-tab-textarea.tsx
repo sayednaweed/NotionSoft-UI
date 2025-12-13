@@ -2,14 +2,7 @@ import React, { type ReactElement, useState, useMemo } from "react";
 import { cn } from "../../utils/cn";
 import Textarea from "../textarea";
 import AnimatedItem from "../animated-item";
-import type { TabState } from "../tab/tab";
-import Tab from "../tab/tab";
-
-// OptionalTabs wrapper
-export function OptionalTabs({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
-}
-OptionalTabs.displayName = "OptionalTabs";
+import type { OptionalTabs, Tab, TabState } from "../tab/tab";
 
 export interface MultiTabTextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {

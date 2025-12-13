@@ -12,7 +12,7 @@ interface TabProps {
   state?: TabState; // <-- now strongly typed
   optional?: boolean;
 }
-export default function Tab({
+export function Tab({
   children,
   className,
   onClick,
@@ -44,3 +44,8 @@ export default function Tab({
 }
 
 Tab.displayName = "Tab";
+
+export function OptionalTabs({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
+OptionalTabs.displayName = "OptionalTabs";

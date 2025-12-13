@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import MultiTabInput, { OptionalTabs } from "./multi-tab-input";
-import Tab from "../tab/tab";
+import { OptionalTabs, Tab } from "../tab/tab";
+import MultiTabInput from "./multi-tab-input";
 
 const meta: Meta<typeof MultiTabInput> = {
   title: "Form/MultiTabInput",

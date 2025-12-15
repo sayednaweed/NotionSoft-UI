@@ -410,7 +410,7 @@ function MultiSelectInputInner<T = any>(
         setShowSelectedOnly(true); // Show only selected items
         updatePosition(); // Recalculate dropdown position
       }}
-      className="flex items-center hover:bg-tertiary/10 hover:text-tertiary cursor-pointer text-primary/60 rounded transition-colors"
+      className="flex items-center pointer-events-auto hover:bg-tertiary/10 hover:text-tertiary cursor-pointer text-primary/60 rounded transition-colors"
     >
       <List className="size-[38px] p-3" />
       <span className="text-sm px-1">{selectedItems.length}</span>
@@ -555,7 +555,7 @@ const Dropdown = <T,>(
                 "focus-visible:border-tertiary/60",
                 "[&::-webkit-outer-spin-button]:appearance-none",
                 "[&::-webkit-inner-spin-button]:appearance-none",
-                "[-moz-appearance:textfield] "
+                "[-moz-appearance:textfield]"
               )}
               placeholder={text.maxRecord}
             />

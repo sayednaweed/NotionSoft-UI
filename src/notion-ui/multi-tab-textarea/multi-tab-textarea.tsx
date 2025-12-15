@@ -101,26 +101,53 @@ const MultiTabTextarea = React.forwardRef<
     tabs.map((tab, idx) => {
       const tabName = tab.props.children;
       const state: TabState = getTabState(tabName, optional);
+      const tabHasError = hasError(tabName);
 
       return React.cloneElement(tab, {
         key: `${optional ? "opt" : "mand"}-${idx}`,
         state,
         optional,
         onClick: () => handleTabChange(tabName, optional),
-        className: tab.props.className,
+        className: cn(
+          tab.props.className,
+          tabHasError && "text-red-400 border-red-400"
+        ),
       });
     });
-
+  const hasError = (tabKey: string) => {
+    if (!errorData) return false;
+    return errorData.has(generateUniqueName(name, tabKey));
+  };
   const activeTabName = generateUniqueName(name, tabState.active);
   const selectTabValue = tabData[activeTabName] || "";
-  const errorMessages = errorData?.get(activeTabName)
-    ? [errorData.get(activeTabName)!]
-    : [];
 
   const direction =
     activeTabName.endsWith("farsi") || activeTabName.endsWith("pashto")
       ? "rtl"
       : "ltr";
+  const errorMessage = useMemo(() => {
+    if (!errorData) return null;
+
+    return Array.from(errorData.entries())
+      .filter(([key]) => key.startsWith(`${name}_`))
+      .map(([key, value], index) => (
+        <AnimatedItem
+          key={key}
+          springProps={{
+            from: { opacity: 0, transform: "translateY(-8px)" },
+            to: { opacity: 1, transform: "translateY(0px)" },
+            delay: index * 100,
+            config: { mass: 1, tension: 210, friction: 20 },
+          }}
+          intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
+        >
+          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
+            {value}
+          </h1>
+        </AnimatedItem>
+      ));
+  }, [errorData, name]);
+
   return (
     <div className={cn("flex flex-col select-none", rootDivClassName)}>
       <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-end gap-4">
@@ -152,31 +179,16 @@ const MultiTabTextarea = React.forwardRef<
         placeholder={placeholder}
         onChange={handleInputChange}
         className={cn(
-          `mt-2 ${errorMessages.length > 0 ? "border-red-400 border-b!" : ""}`,
+          `mt-2 ${
+            errorMessage &&
+            errorMessage.length > 0 &&
+            "border-red-400 border-b!"
+          }`,
           className
         )}
       />
 
-      {errorMessages.map((error: string, index) => (
-        <AnimatedItem
-          key={index}
-          springProps={{
-            from: { opacity: 0, transform: "translateY(-8px)" },
-            to: {
-              opacity: 1,
-              transform: "translateY(0px)",
-              delay: index * 100,
-            },
-            config: { mass: 1, tension: 210, friction: 20 },
-            delay: index * 100,
-          }}
-          intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
-        >
-          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
-            {error}
-          </h1>
-        </AnimatedItem>
-      ))}
+      {errorMessage}
     </div>
   );
 });

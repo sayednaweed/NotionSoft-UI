@@ -24,7 +24,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         ref={ref}
         className={cn(
-          `rounded-sm flex items-center justify-center gap-x-1 cursor-pointer font-medium ltr:text-xs leading-snug li rtl:text-[13px] sm:rtl:text-sm  rtl:font-semibold
+          `rounded-sm grid grid-cols-[1fr_1fr_auto] leading-snug cursor-pointer font-medium ltr:text-xs rtl:text-[13px] sm:rtl:text-sm  rtl:font-semibold
           transition w-fit px-3 py-1.5 duration-200 ease-linear`,
           style,
           disabled &&

@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { useLocation } from "react-router";
 import CachedSvg, {
   CachedSvgProps,
-} from "@/components/notion-ui/cache-svg/cached-svg";
+} from "@/components/notion-ui/cached-svg/cached-svg";
 import AnimatedItem from "@/components/notion-ui/animated-item";
 import { cn } from "@/utils/cn";
 

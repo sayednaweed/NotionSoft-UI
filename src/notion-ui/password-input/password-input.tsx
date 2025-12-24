@@ -93,7 +93,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
         {/* Password strength text */}
         <p
           id="password-strength"
-          className="mb-2 text-start rtl:text-xl-rtl ltr:text-xl-ltr font-medium text-foreground"
+          className="mb-2 text-start rtl:text-lg ltr:text-sm font-medium text-foreground"
         >
           {`${getStrengthText(strengthScore)}. ${text.must_contain}`}
         </p>
@@ -108,9 +108,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
                 <X size={16} className="text-muted-foreground/80" />
               )}
               <span
-                className={`ltr:text-xs rtl:text-lg-rtl ${
+                className={`ltr:text-xs rtl:text-[17px] ${
                   req.met
-                    ? "text-emerald-600 ltr:text-xl-ltr"
+                    ? "text-emerald-600 ltr:text-sm"
                     : "text-muted-foreground"
                 }`}
               >

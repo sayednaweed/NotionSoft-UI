@@ -47,22 +47,6 @@
   --color-primary-background: var(--primary-background);
   --primary-background: oklch(20.435% 0.06485 262.22);
 
-  --text-sm-ltr: 11px;
-  --text-md-ltr: 12px;
-  --text-lg-ltr: 13px;
-  --text-xl-ltr: 14px;
-  --text-2xl-ltr: 15px;
-  --text-3xl-ltr: 17px;
-  --text-4xl-ltr: 20px;
-
-  --text-sm-rtl: 15px;
-  --text-md-rtl: 16px;
-  --text-lg-rtl: 17px;
-  --text-xl-rtl: 18px;
-  --text-2xl-rtl: 19px;
-  --text-3xl-rtl: 20px;
-  --text-4xl-rtl: 22px;
-
   --breakpoint-xxl: 500px;
   --animate-shimmer: shimmer 2.2s infinite linear;
   @keyframes shimmer {

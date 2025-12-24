@@ -212,7 +212,7 @@ export default function DatePicker(props: DatePickerProps) {
         <label
           htmlFor={label}
           className={cn(
-            "font-semibold rtl:text-xl-rtl ltr:text-lg-ltr inline-block pb-1"
+            "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1"
           )}
         >
           {label}
@@ -224,18 +224,18 @@ export default function DatePicker(props: DatePickerProps) {
           height: heightStyle.height,
         }}
         className={cn(
-          "flex items-center text-start px-3 border select-none rounded-sm rtl:text-lg-rtl ltr:text-lg-ltr",
+          "flex items-center text-start px-3 border select-none rounded-sm rtl:text-[17px] ltr:text-[13px]",
           className
         )}
         onClick={onVisibilityChange}
       >
         {selectedDates ? (
-          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr text-primary/80 whitespace-nowrap overflow-hidden">
+          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-[17px] ltr:text-[13px] text-primary/80 whitespace-nowrap overflow-hidden">
             <CalendarDays className="size-4 inline-block text-tertiary rtl:ml-2 rtl:mr-2" />
             {formatHijriDate(selectedDates)}
           </h1>
         ) : (
-          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr font-semibold text-primary whitespace-nowrap overflow-hidden">
+          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-[17px] ltr:text-[13px] font-semibold text-primary whitespace-nowrap overflow-hidden">
             <CalendarDays className="size-4 inline-block text-tertiary" />
             {placeholder}
           </h1>
@@ -261,7 +261,7 @@ export default function DatePicker(props: DatePickerProps) {
           }}
           intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
         >
-          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-sm-ltr">
+          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
             {errorMessage}
           </h1>
         </AnimatedItem>

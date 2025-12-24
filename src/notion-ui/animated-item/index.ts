@@ -1,3 +1,3 @@
-import AnimatedItem from "./animated-item";
+import { AnimatedItem } from "./animated-item";
 
 export default AnimatedItem;

@@ -44,7 +44,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       >
         <div
           className={cn(
-            "relative text-start select-none h-fit rtl:text-lg-rtl ltr:text-lg-ltr"
+            "relative text-start select-none h-fit rtl:text-[17px] ltr:text-[13px]"
           )}
         >
           {/* Required Hint */}
@@ -64,7 +64,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             <label
               htmlFor={label}
               className={cn(
-                "font-semibold rtl:text-xl-rtl ltr:text-lg-ltr inline-block pb-1"
+                "font-semibold rtl:text-md ltr:text-[13px] inline-block pb-1"
               )}
             >
               {label}
@@ -108,7 +108,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             }}
             intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
           >
-            <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-sm-ltr">
+            <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
               {errorMessage}
             </h1>
           </AnimatedItem>

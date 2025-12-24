@@ -1,5 +1,5 @@
+import Input from "./input";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Input } from "./input";
 import { Search, AlertTriangle } from "lucide-react";
 
 const meta: Meta<typeof Input> = {

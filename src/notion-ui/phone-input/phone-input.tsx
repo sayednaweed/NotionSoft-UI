@@ -78,6 +78,9 @@ interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     rootDivClassName?: string;
     iconClassName?: string;
   };
+  text: {
+    searchInputPlaceholder: string;
+  };
   measurement?: PhoneInputSize;
   ROW_HEIGHT?: number;
   VISIBLE_ROWS?: number;
@@ -97,11 +100,14 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   ROW_HEIGHT = 32,
   VISIBLE_ROWS = 10,
   BUFFER = 5,
+  text,
   ...rest
 }) => {
   const { rootDivClassName, iconClassName = "size-4" } = classNames || {};
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+  const { searchInputPlaceholder } = text;
+
   const initialCountry = (() => {
     if (typeof value === "string" && value.startsWith("+")) {
       const matched = defaultCountries.find((c) =>
@@ -119,6 +125,20 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [search, setSearch] = useState("");
+  const filteredCountries = useMemo(() => {
+    if (!search.trim()) return defaultCountries;
+    const s = search.toLowerCase();
+    return defaultCountries.filter(
+      (c) =>
+        c.name.toLowerCase().includes(s) ||
+        c.iso2.toLowerCase().includes(s) ||
+        ("+" + c.dialCode).includes(s)
+    );
+  }, [search]);
+  useEffect(() => {
+    setHighlightedIndex(0);
+  }, [search]);
 
   const [dropDirection, setDropDirection] = useState<"down" | "up">("down");
 
@@ -163,14 +183,14 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
     if (e.key === "ArrowDown") {
       setHighlightedIndex((prev) =>
-        Math.min(prev + 1, defaultCountries.length - 1)
+        Math.min(prev + 1, filteredCountries.length - 1)
       );
       e.preventDefault();
     } else if (e.key === "ArrowUp") {
       setHighlightedIndex((prev) => Math.max(prev - 1, 0));
       e.preventDefault();
     } else if (e.key === "Enter") {
-      chooseCountry(defaultCountries[highlightedIndex]);
+      chooseCountry(filteredCountries[highlightedIndex]);
       e.preventDefault();
     } else if (e.key === "Escape") {
       setOpen(false);
@@ -247,7 +267,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   };
 
-  useLayoutEffect(() => updateDropdownPosition(), [open]);
+  useLayoutEffect(() => updateDropdownPosition(), [open, search]);
   useEffect(() => {
     if (!open) return;
     window.addEventListener("resize", updateDropdownPosition);
@@ -357,6 +377,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             +{country.dialCode}
           </span>
         </button>
+
         <input
           ref={inputRef}
           type="tel"
@@ -377,16 +398,14 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             "focus-visible:border-tertiary/60",
             "[&::-webkit-outer-spin-button]:appearance-none",
             "[&::-webkit-inner-spin-button]:appearance-none",
-            "[-moz-appearance:textfield] ",
+            "[-moz-appearance:textfield] rtl:text-right",
             hasError && "border-red-400",
             className
           )}
           {...rest}
           disabled={readOnly}
-          dir="ltr"
         />
       </div>
-
       {open &&
         createPortal(
           <div
@@ -403,10 +422,21 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             }}
             role="listbox"
           >
+            {/* 🔍 Search bar */}
+            <div className="p-2 border-b bg-card sticky top-0 z-10">
+              <input
+                type="text"
+                autoFocus
+                className="w-full px-2 py-1 text-sm border rounded-sm bg-input/30 focus:outline-none"
+                placeholder={searchInputPlaceholder}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
             <VirtualList
               ROW_HEIGHT={ROW_HEIGHT}
               BUFFER={BUFFER}
-              items={defaultCountries}
+              items={filteredCountries}
               height={ROW_HEIGHT * VISIBLE_ROWS}
               renderRow={(c, i) => (
                 <div
@@ -446,7 +476,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           }}
           intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
         >
-          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-sm-ltr">
+          <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
             {errorMessage}
           </h1>
         </AnimatedItem>

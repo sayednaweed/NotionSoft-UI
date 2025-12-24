@@ -2,12 +2,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import Button from "./button";
 
 const meta: Meta<typeof Button> = {
-  title: "Button/Button",
+  title: "Components/Button",
   component: Button,
+  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "primary", "secondary", "warning"],
+      options: ["primary", "secondary", "warning", "success", "outline"],
     },
     disabled: {
       control: "boolean",
@@ -15,7 +16,11 @@ const meta: Meta<typeof Button> = {
     children: {
       control: "text",
     },
-    onClick: { action: "clicked" },
+  },
+  args: {
+    children: "Button",
+    variant: "primary",
+    disabled: false,
   },
 };
 
@@ -25,33 +30,51 @@ type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {
   args: {
-    children: "Primary Button",
     variant: "primary",
   },
 };
 
 export const Secondary: Story = {
   args: {
-    children: "Secondary Button",
     variant: "secondary",
   },
 };
 
 export const Warning: Story = {
   args: {
-    children: "Warning Button",
     variant: "warning",
+    children: "Delete",
   },
 };
+
 export const Success: Story = {
   args: {
-    children: "Success Button",
     variant: "success",
+    children: "Saved",
   },
 };
+
 export const Outline: Story = {
   args: {
-    children: "Outline Button",
     variant: "outline",
   },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="success">Success</Button>
+      <Button variant="warning">Warning</Button>
+      <Button variant="outline">Outline</Button>
+      <Button disabled>Disabled</Button>
+    </div>
+  ),
 };

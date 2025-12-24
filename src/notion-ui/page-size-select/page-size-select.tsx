@@ -107,27 +107,44 @@ const PageSizeSelect: React.FC<SelectProps> = ({
 
     const rect = trigger.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
     const gap = 6;
 
     const dropdownHeight = Math.min(dropdown.offsetHeight || 0, 260);
+    const dropdownWidth = dropdown.offsetWidth || rect.width;
+
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
 
+    const spaceRight = viewportWidth - rect.left;
+    const spaceLeft = rect.right;
+
+    /* ---------- Vertical (Up / Down) ---------- */
+    let top: number;
     if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
       setDropDirection("up");
-      setPosition({
-        top: rect.top + window.scrollY - dropdownHeight - gap,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
+      top = rect.top + window.scrollY - dropdownHeight - gap;
     } else {
       setDropDirection("down");
-      setPosition({
-        top: rect.bottom + window.scrollY + gap,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
+      top = rect.bottom + window.scrollY + gap;
     }
+
+    /* ---------- Horizontal (Left / Right) ---------- */
+    let left = rect.left + window.scrollX;
+
+    // If dropdown overflows right viewport → shift left
+    if (spaceRight < dropdownWidth && spaceLeft >= dropdownWidth) {
+      left = rect.right + window.scrollX - dropdownWidth;
+    }
+
+    // Clamp to viewport (safety)
+    left = Math.max(8, Math.min(left, viewportWidth - dropdownWidth - 8));
+
+    setPosition({
+      top,
+      left,
+      width: rect.width,
+    });
   };
 
   useLayoutEffect(() => {
@@ -171,7 +188,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
     <div ref={selectRef} className={cn("w-full", className)}>
       <button
         onClick={() => setSelectData((p) => ({ ...p, isOpen: !p.isOpen }))}
-        className="w-full py-2 border rounded-md flex items-center justify-between bg-card"
+        className="w-full px-3 py-2 border rounded-md flex items-center justify-between bg-card"
       >
         {selectData.select.value || placeholder}
         <ChevronDown
@@ -209,7 +226,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
                     ? selectData.select.value
                     : ""
                 }
-                className={`bg-card  dark:bg-card-secondary text-tertiary rtl:text-lg-rtl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none`}
+                className={`bg-card  dark:bg-card-secondary text-tertiary rtl:text-[17px] w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none`}
               />
               <Check
                 className={cn(

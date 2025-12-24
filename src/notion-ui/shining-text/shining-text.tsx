@@ -7,11 +7,7 @@ interface ShiningTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   text: string;
 }
 
-export default function ShiningText({
-  text,
-  className,
-  ...props
-}: ShiningTextProps) {
+export function ShiningText({ text, className, ...props }: ShiningTextProps) {
   // Animate strictly left → right
   const styles = useSpring({
     from: { backgroundPosition: "-100% 0%" }, // start offscreen left
@@ -27,7 +23,7 @@ export default function ShiningText({
         ...styles,
       }}
       className={cn(
-        "bg-gradient-to-r from-gray-300 via-white to-gray-300", // left→right gradient
+        "bg-gradient-to-r text-md font-medium from-black via-gray-100 to-black", // left→right gradient
         "bg-clip-text text-transparent",
         className
       )}

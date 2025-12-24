@@ -42,7 +42,6 @@ export const Default: StoryObj<DatePickerProps> = {
   render: (args) => <Wrapper {...args} />,
   args: {
     placeholder: "Select date...",
-    required: false,
     label: "Date",
     measurement: "md",
   },
@@ -83,7 +82,6 @@ export const WithError: StoryObj<DatePickerProps> = {
     placeholder: "Select date...",
     label: "Birthday",
     errorMessage: "This field is required",
-    required: true,
     requiredHint: "*",
   },
 };

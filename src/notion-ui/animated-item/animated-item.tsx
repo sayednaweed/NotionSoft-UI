@@ -32,7 +32,7 @@ export interface AnimatedItemProps {
   children: React.ReactNode | ((inView: boolean) => React.ReactNode);
 }
 
-export default function AnimatedItem(props: AnimatedItemProps) {
+export function AnimatedItem(props: AnimatedItemProps) {
   const [inView, setInView] = useState(false);
   const { springProps, intersectionArgs, children } = props;
   const defaultOnStart = useCallback(

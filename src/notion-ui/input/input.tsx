@@ -19,7 +19,7 @@ export interface InputProps
   measurement?: NastranInputSize;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
@@ -86,12 +86,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           rootDivClassName,
           "flex w-full flex-col justify-end",
+          requiredHint && !label && "mt-5",
           readOnlyStyle
         )}
       >
         <div
           className={cn(
-            "relative text-start select-none h-fit rtl:text-lg-rtl ltr:text-lg-ltr"
+            "relative text-start select-none h-fit ltr:text-[13px] rtl:text-[18px]"
           )}
         >
           {/* Start Content */}
@@ -135,7 +136,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <label
               htmlFor={label}
               className={cn(
-                "font-semibold rtl:text-xl-rtl ltr:text-lg-ltr inline-block pb-1"
+                "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1"
               )}
             >
               {label}
@@ -189,7 +190,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             }}
             intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
           >
-            <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-sm-ltr">
+            <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
               {errorMessage}
             </h1>
           </AnimatedItem>

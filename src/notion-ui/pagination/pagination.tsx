@@ -63,7 +63,7 @@ const Pagination: React.FC<PaginationProps> = ({ lastPage, onPageChange }) => {
         onClick={() => {
           if (currentPage !== 1) handlePrevPage();
         }}
-        className={`size-8 rounded transition-[color,background-color,transform] cursor-pointer rtl:rotate-180 self-center p-2 ${
+        className={`size-7 rounded transition-[color,background-color,transform] cursor-pointer rtl:rotate-180 self-center p-2 ${
           currentPage === 1
             ? "text-primary/50"
             : "text-primary hover:scale-110 hover:bg-fourth/10"

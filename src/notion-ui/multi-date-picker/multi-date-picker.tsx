@@ -25,7 +25,7 @@ export interface MultiDatePickerProps {
   classNames?: {
     rootDivClassName?: string;
   };
-  errorMessage?: string;
+  error?: string;
   readOnly?: boolean;
   text?: MultiDatePickerText;
   startContent?: React.ReactNode;
@@ -44,7 +44,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
     className,
     measurement = "sm",
     classNames,
-    errorMessage,
+    error,
     readOnly,
     startContent,
     endContent,
@@ -56,7 +56,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
   const [visible, setVisible] = useState(false);
   const [selectedDates, setSelectedDates] = useState<DateObject[]>(value);
   const calendarRef = useRef<any>(null);
-  const hasError = !!errorMessage;
+  const hasError = !!error;
 
   useEffect(() => {
     // Add event listener for clicks outside
@@ -75,10 +75,6 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
   };
 
   const handleDateChange = (selectedDates: DateObject[]) => {
-    // let object = { date, format };
-    // const gre = new DateObject(object)
-    // .convert(gregorian, gregorian_en)
-    // .format();
     dateOnComplete(selectedDates);
     setSelectedDates(selectedDates);
   };
@@ -224,7 +220,6 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
                     .convert(localizations.calendar, localizations.locale)
                     .format()}
                 </h1>
-                {/* <h1>{formatHijriDate(date)}</h1> */}
               </div>
             ))}
           </div>
@@ -256,7 +251,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
           intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
         >
           <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
-            {errorMessage}
+            {error}
           </h1>
         </AnimatedItem>
       )}

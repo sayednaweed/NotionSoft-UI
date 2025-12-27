@@ -1,6 +1,5 @@
 import * as React from "react";
-import { cn } from "../../utils/cn";
-// import { cn } from "@/utils/cn";
+import { cn } from "@/utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
@@ -16,7 +15,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const { className, children, variant, disabled, ...rest } = props;
     const style =
       variant == "secondary"
-        ? "border hover:bg-primary hover:text-primary-foreground"
+        ? "bg-tertiary hover:shadow-sm shadow-lg hover:bg-tertiary rounded text-[12px] w-fit text-white"
         : variant == "warning"
         ? "bg-red-500 text-primary-foreground"
         : variant == "icon"

@@ -88,12 +88,10 @@ const PageSizeSelect: React.FC<SelectProps> = ({
       const cached = await loadFn(paginationKey);
       if (cached) {
         setSelectData((p) => ({ ...p, select: cached }));
-        onChange?.(cached.value);
       } else {
         const item = { key: paginationKey, value: "10", option: KEYS.default };
         setSelectData((p) => ({ ...p, select: item }));
         saveFn(paginationKey, item);
-        onChange?.("10");
       }
     };
     loadCache();
@@ -188,7 +186,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
     <div ref={selectRef} className={cn("w-full", className)}>
       <button
         onClick={() => setSelectData((p) => ({ ...p, isOpen: !p.isOpen }))}
-        className="w-full px-3 py-2 border rounded-md flex items-center justify-between bg-card"
+        className="w-full gap-1 text-sm px-2 py-2 border rounded-md flex items-center justify-between bg-card"
       >
         {selectData.select.value || placeholder}
         <ChevronDown
@@ -252,16 +250,14 @@ const PageSizeSelect: React.FC<SelectProps> = ({
             {/* Options */}
             <ul className="max-h-60 overflow-auto">
               {options.length === 0 ? (
-                <li className="px-4 py-2 text-center text-sm">
-                  {emptyPlaceholder}
-                </li>
+                <li className="px-4 py-2 text-center">{emptyPlaceholder}</li>
               ) : (
                 options.map((o) => (
                   <li
                     key={o.value}
                     onClick={() => handleSelect(o.value)}
                     className={cn(
-                      "px-4 py-2 cursor-pointer flex justify-between hover:bg-primary/10",
+                      "px-4 py-2 text-sm cursor-pointer flex justify-between hover:bg-primary/10",
                       selectData.select.value === o.value && "bg-primary/10"
                     )}
                   >

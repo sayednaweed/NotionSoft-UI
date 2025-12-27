@@ -166,9 +166,9 @@ export const SidebarItem = memo(function SidebarItem({
       <div
         onClick={handleClick}
         className={cn(
-          `grid grid-cols-[1fr_auto] ltr:py-2 rtl:p-1 ltr:pl-2.5 rtl:pr-2 ltr:mx-1 rtl:mx-1.5 text-primary items-center rtl:text-lg ltr:text-xs cursor-pointer rounded-md ${
+          `grid grid-cols-[1fr_auto] ltr:py-2 dark:text-primary/70 rtl:p-1 ltr:pl-2.5 rtl:pr-[7px] ltr:mx-1 rtl:mx-1.5 text-primary items-center rtl:text-lg ltr:text-xs cursor-pointer rounded-md ${
             isActive
-              ? `bg-tertiary/90 text-card font-semibold`
+              ? `bg-tertiary/90 text-card dark:text-primary font-semibold`
               : "hover:opacity-75"
           }`
         )}

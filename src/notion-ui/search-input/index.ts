@@ -1,3 +1,19 @@
-import SearchInput from "./search-input";
+import {
+  NastranInputSize,
+  SearchInputProps,
+  FilterItem,
+  BaseSearchInputProps,
+  FetchProps,
+  ApiConfigProps,
+  SearchInputForward,
+} from "./search-input";
 
-export default SearchInput;
+export {
+  type NastranInputSize,
+  type SearchInputProps,
+  FilterItem,
+  BaseSearchInputProps,
+  FetchProps,
+  ApiConfigProps,
+  SearchInputForward as SearchInput,
+};

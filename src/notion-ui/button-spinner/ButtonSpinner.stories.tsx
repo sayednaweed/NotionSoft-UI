@@ -1,10 +1,9 @@
+import { Button } from "@/components/notion-ui/button";
+import { ButtonSpinner } from "@/components/notion-ui/button-spinner";
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
-import ButtonSpinner from "./button-spinner";
-import Button from "../button/button";
 
 const meta: Meta<typeof ButtonSpinner> = {
-  title: "Components/ButtonSpinner",
+  title: "Button/ButtonSpinner",
   component: ButtonSpinner,
   tags: ["autodocs"],
   argTypes: {

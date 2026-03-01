@@ -1,6 +1,5 @@
+import { CachedSvg } from "@/components/notion-ui/cached-svg";
 import type { Meta, StoryObj } from "@storybook/react";
-
-import CachedSvg from "./cached-svg";
 
 /* ---------------------------------- */
 /* Meta */
@@ -36,11 +35,10 @@ const sampleSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 /* -------- Fetch-based example -------- */
 export const FetchExample: Story = {
   render: () => (
-    <div style={{ width: 40, height: 40 }}>
+    <div>
       <CachedSvg
-        src="https://dummy-svg-url.com/sample.svg"
-        fetch={async () => {
-          return new Response(sampleSvg, { status: 200 });
+        apiConfig={{
+          src: "https://cdn.jsdelivr.net/gh/hampusborgos/country-flags@main/svg/af.svg",
         }}
       />
     </div>
@@ -50,12 +48,12 @@ export const FetchExample: Story = {
 /* -------- API-config-based example -------- */
 export const ApiConfigExample: Story = {
   render: () => (
-    <div style={{ width: 40, height: 40 }}>
+    <div>
       <CachedSvg
         apiConfig={{
-          src: "https://dummy-api.com/svg",
-          headers: { Authorization: "Bearer token" },
+          src: "https://cdn.jsdelivr.net/gh/hampusborgos/country-flags@main/svg/af.svg",
         }}
+        className="size-32"
       />
     </div>
   ),
@@ -64,9 +62,9 @@ export const ApiConfigExample: Story = {
 /* -------- Loading state (Shimmer) -------- */
 export const LoadingState: Story = {
   render: () => (
-    <div style={{ width: 40, height: 40 }}>
+    <div>
       <CachedSvg
-        src="https://dummy-loading.com/svg"
+        src="https://cdn.jsdelivr.net/gh/hampusborgos/country-flags@main/svg/af.svg"
         fetch={() => new Promise(() => {})} // never resolves to simulate loading
       />
     </div>

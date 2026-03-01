@@ -1,3 +1,3 @@
-import MultiTabInput from "./multi-tab-input";
+import { MultiTabInputProps, MultiTabInput } from "./multi-tab-input";
 
-export default MultiTabInput;
+export { MultiTabInput, type MultiTabInputProps };

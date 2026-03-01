@@ -2,11 +2,13 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import DateObject from "react-date-object";
 
-import MultiDatePicker, { MultiDatePickerProps } from "./multi-date-picker";
-
 // Persian
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import {
+  MultiDatePicker,
+  MultiDatePickerProps,
+} from "@/components/notion-ui/multi-date-picker";
 
 export default {
   title: "Date/MultiDatePicker",
@@ -78,7 +80,7 @@ export const WithError: StoryObj<MultiDatePickerProps> = {
     text: { label: "Dates", requiredHint: "*" },
     value: [],
     measurement: "md",
-    errorMessage: "Please select at least one date",
+    error: "Please select at least one date",
   },
 };
 

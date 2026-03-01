@@ -1,14 +1,13 @@
-// import { cn } from "@/utils/cn";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
-export interface CircleLoaderProps {
+interface CircleLoaderProps {
   className?: string;
   labelclassname?: string;
   label?: string;
   parentClassName?: string;
 }
 
-export default function CircleLoader(props: CircleLoaderProps) {
+function CircleLoader(props: CircleLoaderProps) {
   const { label, className, labelclassname, parentClassName, ...restProps } =
     props;
 
@@ -17,7 +16,7 @@ export default function CircleLoader(props: CircleLoaderProps) {
       role="status"
       className={cn(
         "flex flex-col items-center justify-center",
-        parentClassName
+        parentClassName,
       )}
     >
       <svg
@@ -25,7 +24,7 @@ export default function CircleLoader(props: CircleLoaderProps) {
         aria-hidden="true"
         className={cn(
           "w-8 h-8 text-primary/40 animate-spin fill-primary",
-          className
+          className,
         )}
         viewBox="0 0 100 101"
         fill="none"
@@ -46,3 +45,4 @@ export default function CircleLoader(props: CircleLoaderProps) {
     </div>
   );
 }
+export { type CircleLoaderProps, CircleLoader };

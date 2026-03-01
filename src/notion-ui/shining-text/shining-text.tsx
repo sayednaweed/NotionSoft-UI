@@ -1,13 +1,12 @@
 import * as React from "react";
 import { useSpring, animated } from "@react-spring/web";
-import { cn } from "../../utils/cn";
-// import { cn } from "@/utils/cn";
+import { cn } from "@/utils/cn";
 
 interface ShiningTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   text: string;
 }
 
-export function ShiningText({ text, className, ...props }: ShiningTextProps) {
+function ShiningText({ text, className, ...props }: ShiningTextProps) {
   // Animate strictly left → right
   const styles = useSpring({
     from: { backgroundPosition: "-100% 0%" }, // start offscreen left
@@ -23,9 +22,9 @@ export function ShiningText({ text, className, ...props }: ShiningTextProps) {
         ...styles,
       }}
       className={cn(
-        "bg-gradient-to-r text-md font-medium from-black via-gray-100 to-black", // left→right gradient
+        "bg-linear-to-r text-md font-medium from-black via-gray-100 to-black", // left→right gradient
         "bg-clip-text text-transparent",
-        className
+        className,
       )}
       {...props}
     >
@@ -33,3 +32,4 @@ export function ShiningText({ text, className, ...props }: ShiningTextProps) {
     </animated.span>
   );
 }
+export { ShiningText };

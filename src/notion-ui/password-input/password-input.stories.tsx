@@ -1,5 +1,8 @@
+import {
+  PasswordInput,
+  PasswordInputProps,
+} from "@/components/notion-ui/password-input";
 import type { Meta, StoryObj } from "@storybook/react";
-import PasswordInput, { PasswordInputProps } from "./password-input";
 
 const meta: Meta<PasswordInputProps> = {
   title: "Form/PasswordInput",
@@ -10,10 +13,6 @@ const meta: Meta<PasswordInputProps> = {
       control: "text",
       description: "Initial password value",
     },
-    parentClassName: {
-      control: "text",
-      description: "Wrapper className",
-    },
   },
 };
 
@@ -23,7 +22,6 @@ type Story = StoryObj<PasswordInputProps>;
 export const Default: Story = {
   args: {
     placeholder: "Enter password...",
-    parentClassName: "",
     text: {
       strong_password: "Strong password",
       enter_password: "Enter a password",

@@ -2,16 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import DateObject from "react-date-object";
 import type { Calendar, Locale } from "react-date-object";
 import { Calendar as Calendars } from "react-multi-date-picker";
-export type DatePickerSize = "sm" | "md" | "lg";
+type DatePickerSize = "sm" | "md" | "lg";
 import gregorian from "react-date-object/calendars/gregorian";
 import gregorian_en from "react-date-object/locales/gregorian_en";
 import { CalendarDays } from "lucide-react";
 import { createPortal } from "react-dom";
 
-import AnimatedItem from "../animated-item";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
 
-export interface DatePickerProps {
+interface DatePickerProps {
   dateOnComplete: (date: DateObject) => boolean | void;
   value: DateObject | undefined | string;
   className?: string;
@@ -34,7 +34,7 @@ export interface DatePickerProps {
   measurement?: DatePickerSize;
 }
 
-export default function DatePicker(props: DatePickerProps) {
+function DatePicker(props: DatePickerProps) {
   const {
     dateOnComplete,
     value,
@@ -53,7 +53,7 @@ export default function DatePicker(props: DatePickerProps) {
 
   const [visible, setVisible] = useState(false);
   const [selectedDates, setSelectedDates] = useState<DateObject | undefined>(
-    typeof value === "string" ? new DateObject(new Date(value)) : value
+    typeof value === "string" ? new DateObject(new Date(value)) : value,
   );
 
   const calendarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -139,29 +139,29 @@ export default function DatePicker(props: DatePickerProps) {
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           }
         : measurement == "md"
-        ? {
-            height: "44px",
-            paddingBottom: "pb-[2px]",
-            endContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          }
-        : {
-            height: "40px",
-            paddingBottom: "pb-[2px]",
-            endContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          },
-    [measurement, label]
+          ? {
+              height: "44px",
+              paddingBottom: "pb-[2px]",
+              endContent: label
+                ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
+                : "top-[22px] -translate-y-1/2",
+              startContent: label
+                ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
+                : "top-[22px] -translate-y-1/2",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            }
+          : {
+              height: "40px",
+              paddingBottom: "pb-[2px]",
+              endContent: label
+                ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
+                : "top-[20px] -translate-y-1/2",
+              startContent: label
+                ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
+                : "top-[20px] -translate-y-1/2",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            },
+    [measurement, label],
   );
   const readOnlyStyle = readOnly && "opacity-40";
   return (
@@ -193,14 +193,14 @@ export default function DatePicker(props: DatePickerProps) {
               locale={localizations.locale}
             />
           </div>,
-          document.body
+          document.body,
         )}
       {/* Required Hint */}
       {requiredHint && (
         <span
           className={cn(
             "absolute font-semibold text-red-600 rtl:text-[13px] ltr:text-[11px] ltr:right-2.5 rtl:left-2.5",
-            heightStyle.required
+            heightStyle.required,
           )}
         >
           {requiredHint}
@@ -212,7 +212,7 @@ export default function DatePicker(props: DatePickerProps) {
         <label
           htmlFor={label}
           className={cn(
-            "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1"
+            "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1",
           )}
         >
           {label}
@@ -225,7 +225,7 @@ export default function DatePicker(props: DatePickerProps) {
         }}
         className={cn(
           "flex items-center text-start px-3 border select-none rounded-sm rtl:text-[17px] ltr:text-[13px]",
-          className
+          className,
         )}
         onClick={onVisibilityChange}
       >
@@ -269,3 +269,5 @@ export default function DatePicker(props: DatePickerProps) {
     </div>
   );
 }
+
+export { DatePickerProps, DatePickerSize, DatePicker };

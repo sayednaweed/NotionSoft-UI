@@ -1,12 +1,9 @@
-import { cn } from "../../utils/cn";
-// import { cn } from "@/utils/cn";
-
-export interface IButtonSpinnerProps {
+interface IButtonSpinnerProps {
   children: any;
   loading: boolean;
 }
 
-export default function ButtonSpinner(props: IButtonSpinnerProps) {
+function ButtonSpinner(props: IButtonSpinnerProps) {
   const { loading, children } = props;
   return (
     <>
@@ -23,3 +20,4 @@ export default function ButtonSpinner(props: IButtonSpinnerProps) {
     </>
   );
 }
+export { ButtonSpinner, IButtonSpinnerProps };

@@ -1,3 +1,3 @@
-import PhoneInput from "./phone-input";
+import { PhoneInput, PhoneInputSize } from "./phone-input";
 
-export default PhoneInput;
+export { PhoneInput, type PhoneInputSize };

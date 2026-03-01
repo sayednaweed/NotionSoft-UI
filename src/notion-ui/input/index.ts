@@ -1,3 +1,3 @@
-import Input from "./input";
+import { Input, InputProps, NastranInputSize } from "./input";
 
-export default Input;
+export { Input, type NastranInputSize, type InputProps };

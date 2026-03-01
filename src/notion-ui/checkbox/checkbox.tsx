@@ -1,10 +1,9 @@
-import CircleLoader from "@/components/notion-ui/circle-loader";
+import { CircleLoader } from "@/components/notion-ui/circle-loader";
 import { cn } from "@/utils/cn";
 import { CheckIcon } from "lucide-react";
 import React from "react";
 
-export interface CheckboxProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onCheckedChange: (value: boolean) => void;
   checked: boolean;
   loading?: boolean;
@@ -35,7 +34,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         className={cn(
           "flex items-center space-x-3",
           rootDivClassName,
-          readOnlyStyle
+          readOnlyStyle,
         )}
       >
         {loading ? (
@@ -68,7 +67,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
       </div>
     );
-  }
+  },
 );
 
-export default Checkbox;
+export { Checkbox, CheckboxProps };

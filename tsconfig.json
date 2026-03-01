@@ -8,6 +8,8 @@
     "paths": {
       "@/utils/*": ["utils/*"],
       "@/components/notion-ui/*": ["notion-ui/*"],
+      // "@/utils/hook": ["notion-ui/hook.ts"],
+      // "@/utils/helper": ["notion-ui/helper.ts"],
       "@/*": ["*"]
     }
   }

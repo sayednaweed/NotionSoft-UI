@@ -1,3 +1,6 @@
-import BooleanStatusButton from "./BooleanStatusButton";
+import {
+  StatusButton,
+  StatusButtonProps,
+} from "@/components/notion-ui/status-button/status-button";
 
-export default BooleanStatusButton;
+export { StatusButton, type StatusButtonProps };

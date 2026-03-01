@@ -1,3 +1,3 @@
-import PageSizeSelect from "./page-size-select";
+import { PageSizeSelect } from "./page-size-select";
 
-export default PageSizeSelect;
+export { PageSizeSelect };

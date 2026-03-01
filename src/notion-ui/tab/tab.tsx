@@ -1,7 +1,7 @@
 import { cn } from "../../utils/cn";
 import { Asterisk, CircleDot } from "lucide-react";
 
-export type TabState = "active" | "selected" | "unselected";
+type TabState = "active" | "selected" | "unselected";
 
 interface TabProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ interface TabProps {
   state?: TabState; // <-- now strongly typed
   optional?: boolean;
 }
-export function Tab({
+function Tab({
   children,
   className,
   onClick,
@@ -29,10 +29,10 @@ export function Tab({
     state === "active"
       ? "text-primary-foreground bg-tertiary"
       : state === "selected"
-      ? "bg-primary/50 text-primary-foreground/90"
-      : "bg-primary/10 text-primary/50",
+        ? "bg-primary/50 text-primary-foreground/90"
+        : "bg-primary/10 text-primary/50",
 
-    className
+    className,
   );
 
   return (
@@ -45,7 +45,9 @@ export function Tab({
 
 Tab.displayName = "Tab";
 
-export function OptionalTabs({ children }: { children: React.ReactNode }) {
+function OptionalTabs({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 OptionalTabs.displayName = "OptionalTabs";
+
+export { Tab, TabState, OptionalTabs };

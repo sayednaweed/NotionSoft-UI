@@ -1,3 +1,3 @@
-import CircleLoader from "./circle-loader";
+import { CircleLoaderProps, CircleLoader } from "./circle-loader";
 
-export default CircleLoader;
+export { type CircleLoaderProps, CircleLoader };

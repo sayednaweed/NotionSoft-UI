@@ -1,3 +1,7 @@
-import MultiDatePicker from "./multi-date-picker";
+import {
+  MultiDatePickerSize,
+  MultiDatePickerProps,
+  MultiDatePicker,
+} from "./multi-date-picker";
 
-export default MultiDatePicker;
+export { type MultiDatePickerSize, type MultiDatePickerProps, MultiDatePicker };

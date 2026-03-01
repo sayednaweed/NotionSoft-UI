@@ -1,4 +1,5 @@
-import Input, { InputProps } from "../input/input";
+import { Input, InputProps } from "@/components/notion-ui/input";
+import { checkStrength, passwordStrengthScore } from "@/utils/helper";
 import { Check, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
 type PasswordInputText = {
@@ -12,7 +13,7 @@ type PasswordInputText = {
   at_lea_1_lowcas_lett: string;
   at_lea_1_upcas_lett: string;
 };
-export interface PasswordInputProps extends InputProps {
+interface PasswordInputProps extends InputProps {
   text: PasswordInputText;
 }
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
@@ -37,14 +38,14 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
       () =>
         checkStrength(
           typeof currentPassword == "string" ? currentPassword : "",
-          text
+          text,
         ),
-      [currentPassword, text]
+      [currentPassword, text],
     );
 
     const strengthScore = useMemo(
       () => passwordStrengthScore(strength),
-      [strength]
+      [strength],
     );
 
     const getStrengthColor = (score: number) => {
@@ -84,7 +85,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
         >
           <div
             className={`h-full ${getStrengthColor(
-              strengthScore
+              strengthScore,
             )} transition-all duration-500 ease-out`}
             style={{ width: `${(strengthScore / 4) * 100}%` }}
           />
@@ -121,27 +122,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
         </ul>
       </div>
     );
-  }
+  },
 );
 
-export const checkStrength = (pass: string, text: PasswordInputText) => {
-  const requirements = [
-    { regex: /.{8,}/, text: text.at_lea_8_char },
-    { regex: /[0-9]/, text: text.at_lea_1_num },
-    { regex: /[a-z]/, text: text.at_lea_1_lowcas_lett },
-    { regex: /[A-Z]/, text: text.at_lea_1_upcas_lett },
-  ];
-
-  return requirements.map((req) => ({
-    met: req.regex.test(pass),
-    text: req.text,
-  }));
-};
-export const passwordStrengthScore = (
-  strength: {
-    met: boolean;
-    text: any;
-  }[]
-): number => strength.filter((req) => req.met).length;
-
-export default PasswordInput;
+export { PasswordInput, PasswordInputProps, PasswordInputText };

@@ -1,3 +1,3 @@
-import Textarea from "./textarea";
+import { Textarea, TextareaProps } from "./textarea";
 
-export default Textarea;
+export { Textarea, type TextareaProps };

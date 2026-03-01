@@ -1,11 +1,10 @@
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
+import { OptionalTabs, Tab, TabState } from "@/components/notion-ui/tab";
+import { Textarea } from "@/components/notion-ui/textarea";
+import { cn } from "@/utils/cn";
 import React, { type ReactElement, useState, useMemo } from "react";
-import { cn } from "../../utils/cn";
-import Textarea from "../textarea";
-import AnimatedItem from "../animated-item";
-import type { OptionalTabs, Tab, TabState } from "../tab/tab";
 
-export interface MultiTabTextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface MultiTabTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   children:
     | ReactElement<typeof Tab>
     | ReactElement<typeof Tab>[]
@@ -110,7 +109,7 @@ const MultiTabTextarea = React.forwardRef<
         onClick: () => handleTabChange(tabName, optional),
         className: cn(
           tab.props.className,
-          tabHasError && "text-red-400 border-red-400"
+          tabHasError && "text-red-400 border-red-400",
         ),
       });
     });
@@ -184,7 +183,7 @@ const MultiTabTextarea = React.forwardRef<
             errorMessage.length > 0 &&
             "border-red-400 border-b!"
           }`,
-          className
+          className,
         )}
       />
 
@@ -193,4 +192,4 @@ const MultiTabTextarea = React.forwardRef<
   );
 });
 
-export default MultiTabTextarea;
+export { MultiTabTextarea, MultiTabTextareaProps };

@@ -10,7 +10,7 @@ import React, {
   useMemo,
 } from "react";
 import { createPortal } from "react-dom";
-import AnimatedItem from "../animated-item";
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
 
 interface VirtualListProps {
   items: ParsedCountry[];
@@ -35,7 +35,7 @@ const VirtualList: React.FC<VirtualListProps> = ({
   const startIndex = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - BUFFER);
   const endIndex = Math.min(
     items.length,
-    Math.ceil((scrollTop + height) / ROW_HEIGHT) + BUFFER
+    Math.ceil((scrollTop + height) / ROW_HEIGHT) + BUFFER,
   );
 
   // Slice items to render
@@ -68,12 +68,12 @@ const VirtualList: React.FC<VirtualListProps> = ({
     </div>
   );
 };
-export type PhoneInputSize = "sm" | "md" | "lg";
+type PhoneInputSize = "sm" | "md" | "lg";
 
 interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;
   label?: string;
-  errorMessage?: string;
+  error?: string;
   classNames?: {
     rootDivClassName?: string;
     iconClassName?: string;
@@ -85,17 +85,19 @@ interface PhoneInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   ROW_HEIGHT?: number;
   VISIBLE_ROWS?: number;
   BUFFER?: number;
+  onTranslate?: (value: string) => string;
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
   measurement = "sm",
-  errorMessage,
+  error,
   label,
   readOnly,
   className,
   classNames,
   requiredHint,
   value,
+  onTranslate,
   onChange,
   ROW_HEIGHT = 32,
   VISIBLE_ROWS = 10,
@@ -111,7 +113,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const initialCountry = (() => {
     if (typeof value === "string" && value.startsWith("+")) {
       const matched = defaultCountries.find((c) =>
-        value.startsWith("+" + c.dialCode)
+        value.startsWith("+" + c.dialCode),
       );
       return matched || defaultCountries[0];
     }
@@ -119,7 +121,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   })();
   const [country, setCountry] = useState<ParsedCountry>(initialCountry);
   const [phone, setPhone] = useState<string>(
-    typeof value === "string" ? value : `+${initialCountry.dialCode}`
+    typeof value === "string" ? value : `+${initialCountry.dialCode}`,
   );
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -133,7 +135,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       (c) =>
         c.name.toLowerCase().includes(s) ||
         c.iso2.toLowerCase().includes(s) ||
-        ("+" + c.dialCode).includes(s)
+        ("+" + c.dialCode).includes(s),
     );
   }, [search]);
   useEffect(() => {
@@ -142,7 +144,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const [dropDirection, setDropDirection] = useState<"down" | "up">("down");
 
-  const hasError = !!errorMessage;
+  const hasError = !!error;
 
   // Choose country
   const chooseCountry = (c: ParsedCountry) => {
@@ -183,7 +185,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
     if (e.key === "ArrowDown") {
       setHighlightedIndex((prev) =>
-        Math.min(prev + 1, filteredCountries.length - 1)
+        Math.min(prev + 1, filteredCountries.length - 1),
       );
       e.preventDefault();
     } else if (e.key === "ArrowUp") {
@@ -282,7 +284,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   useEffect(() => {
     if (open) {
       const currentIndex = defaultCountries.findIndex(
-        (c) => c.iso2 === country.iso2
+        (c) => c.iso2 === country.iso2,
       );
       if (currentIndex >= 0) {
         setHighlightedIndex(currentIndex);
@@ -297,15 +299,15 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           }
         : measurement == "md"
-        ? {
-            height: "44px",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          }
-        : {
-            height: "40px",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          },
-    [measurement, label]
+          ? {
+              height: "44px",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            }
+          : {
+              height: "40px",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            },
+    [measurement, label],
   );
   const readOnlyStyle = readOnly && "opacity-40";
 
@@ -333,7 +335,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       className={cn(
         rootDivClassName,
         "relative flex flex-col w-full",
-        readOnlyStyle
+        readOnlyStyle,
       )}
       ref={containerRef}
       onKeyDown={handleKeyDown}
@@ -343,7 +345,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         <span
           className={cn(
             "absolute font-semibold text-red-600 rtl:text-[13px] ltr:text-[11px] ltr:right-2.5 rtl:left-2.5",
-            heightStyle.required
+            heightStyle.required,
           )}
         >
           {requiredHint}
@@ -355,7 +357,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         <label
           htmlFor={label}
           className={cn(
-            "font-semibold ltr:text-[13px] rtl:text-[18px] text-start inline-block pb-1"
+            "font-semibold ltr:text-[13px] rtl:text-[18px] text-start inline-block pb-1",
           )}
         >
           {label}
@@ -400,7 +402,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             "[&::-webkit-inner-spin-button]:appearance-none",
             "[-moz-appearance:textfield] rtl:text-right",
             hasError && "border-red-400",
-            className
+            className,
           )}
           {...rest}
           disabled={readOnly}
@@ -412,7 +414,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             ref={dropdownRef}
             className={cn(
               "absolute z-50 border bg-card shadow-lg",
-              dropDirection === "down" ? "rounded-b" : "rounded-t"
+              dropDirection === "down" ? "rounded-b" : "rounded-t",
             )}
             style={{
               top: position.top,
@@ -448,13 +450,15 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                   aria-selected={i === highlightedIndex}
                 >
                   <LazyFlag iso2={c.iso2} className={iconClassName} />
-                  <span className="flex-1 truncate">{c.name}</span>
+                  <span className="flex-1 truncate">
+                    {onTranslate ? onTranslate(c.name) : c.name}
+                  </span>
                   <span>+{c.dialCode}</span>
                 </div>
               )}
             />
           </div>,
-          document.body
+          document.body,
         )}
       {/* Error Message */}
       {hasError && (
@@ -477,11 +481,11 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           intersectionArgs={{ once: true, rootMargin: "-5% 0%" }}
         >
           <h1 className="text-red-400 text-start capitalize rtl:text-sm rtl:font-medium ltr:text-[11px]">
-            {errorMessage}
+            {error}
           </h1>
         </AnimatedItem>
       )}
     </div>
   );
 };
-export default PhoneInput;
+export { PhoneInput, PhoneInputSize };

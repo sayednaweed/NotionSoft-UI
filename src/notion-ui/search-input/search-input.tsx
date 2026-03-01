@@ -6,14 +6,15 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { buildNestedFiltersQuery, cn, useDebounce } from "../../utils/cn";
-import Input from "../input";
 import { Eraser, ListFilter, LoaderCircle, X } from "lucide-react";
-import CircleLoader from "../circle-loader";
+import { useDebounce } from "@/utils/hook";
+import { buildNestedFiltersQuery } from "@/utils/helper";
+import { Input } from "@/components/notion-ui/input";
+import { cn } from "@/utils/cn";
 
-export type NastranInputSize = "sm" | "md" | "lg";
+type NastranInputSize = "sm" | "md" | "lg";
 
-export interface FilterItem {
+interface FilterItem {
   key: string;
   name: string;
 }
@@ -23,8 +24,10 @@ interface ApiConfig {
   params?: Record<string, any>;
 }
 // Generic Props
-export interface BaseSearchInputProps<T = { id: string; name: string }>
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onSelect"> {
+interface BaseSearchInputProps<T = { id: string; name: string }> extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onSelect"
+> {
   renderItem?: (item: T) => React.ReactNode;
   itemOnClick?: (item: T) => void;
   filters?: FilterItem[];
@@ -44,23 +47,23 @@ export interface BaseSearchInputProps<T = { id: string; name: string }>
 }
 
 // Either user provides `fetch` function...
-export interface FetchProps<T> extends BaseSearchInputProps<T> {
+interface FetchProps<T> extends BaseSearchInputProps<T> {
   fetch: (
     value: string,
     filters?: Record<string, boolean>,
-    maxFetch?: number
+    maxFetch?: number,
   ) => Promise<T[]>;
   apiConfig?: never;
 }
 
 // ...or `apiConfig` object
-export interface ApiConfigProps<T> extends BaseSearchInputProps<T> {
+interface ApiConfigProps<T> extends BaseSearchInputProps<T> {
   fetch?: never;
   apiConfig: ApiConfig;
 }
 
 // The final props type
-export type SearchInputProps<T = { id: string; name: string }> =
+type SearchInputProps<T = { id: string; name: string }> =
   | FetchProps<T>
   | ApiConfigProps<T>;
 
@@ -87,7 +90,7 @@ function SearchInputInner<T = { id: string; name: string }>(
     itemOnClick,
     ...props
   }: SearchInputProps<T>,
-  ref: React.Ref<HTMLInputElement>
+  ref: React.Ref<HTMLInputElement>,
 ) {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -102,7 +105,7 @@ function SearchInputInner<T = { id: string; name: string }>(
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) return JSON.parse(saved);
       return filters.reduce((acc, f) => ({ ...acc, [f.key]: false }), {});
-    }
+    },
   );
   const [dropDirection, setDropDirection] = useState<"down" | "up">("down");
 
@@ -132,12 +135,12 @@ function SearchInputInner<T = { id: string; name: string }>(
           data = await fetch(
             debouncedValue,
             filtersState,
-            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
+            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined,
           );
         } else if (apiConfig) {
           // Only include active filters
           const activeFilters = Object.fromEntries(
-            Object.entries(filtersState).filter(([_, v]) => v)
+            Object.entries(filtersState).filter(([_, v]) => v),
           );
 
           // Build nested filters query
@@ -274,7 +277,7 @@ function SearchInputInner<T = { id: string; name: string }>(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
     },
-    []
+    [],
   );
 
   const dropdown =
@@ -294,7 +297,7 @@ function SearchInputInner<T = { id: string; name: string }>(
           maxFetch,
           setMaxFetch,
           STORAGE_KEY,
-          onFiltersChange
+          onFiltersChange,
         )
       : null;
 
@@ -324,7 +327,7 @@ function SearchInputInner<T = { id: string; name: string }>(
                   }}
                   className={cn(
                     "text-primary/50 hover:bg-tertiary/10 hover:text-tertiary size-[38px] p-3 cursor-pointer rounded transition-colors",
-                    showFilters && "text-tertiary"
+                    showFilters && "text-tertiary",
                   )}
                 />
               )}
@@ -339,12 +342,10 @@ function SearchInputInner<T = { id: string; name: string }>(
 
 // Wrap with forwardRef and generic
 const SearchInputForward = React.forwardRef(SearchInputInner) as <
-  T = { id: string; name: string }
+  T = { id: string; name: string },
 >(
-  props: SearchInputProps<T> & { ref?: React.Ref<HTMLInputElement> }
+  props: SearchInputProps<T> & { ref?: React.Ref<HTMLInputElement> },
 ) => React.ReactElement;
-
-export default SearchInputForward;
 
 /* Dropdown */
 const Dropdown = <T,>(
@@ -368,7 +369,7 @@ const Dropdown = <T,>(
   setMaxFetch?: React.Dispatch<React.SetStateAction<number | "">>,
   STORAGE_KEY?: string,
   onFiltersChange?: (filtersState: Record<string, boolean>) => void,
-  itemOnClick?: (item: T) => void
+  itemOnClick?: (item: T) => void,
 ) =>
   !isFetching &&
   createPortal(
@@ -376,7 +377,7 @@ const Dropdown = <T,>(
       ref={dropdownRef}
       className={cn(
         "absolute z-50 border border-border bg-card shadow-lg pt-3 pb-2",
-        dropDirection === "down" ? "rounded-b" : "rounded-t"
+        dropDirection === "down" ? "rounded-b" : "rounded-t",
       )}
       style={{ top: position.top, left: position.left, width: position.width }}
     >
@@ -405,7 +406,7 @@ const Dropdown = <T,>(
                 if (STORAGE_KEY)
                   localStorage.setItem(
                     `${STORAGE_KEY}_MAX_FETCH`,
-                    JSON.stringify(value)
+                    JSON.stringify(value),
                   );
               }}
               className={cn(
@@ -415,7 +416,7 @@ const Dropdown = <T,>(
                 "focus-visible:border-tertiary/60",
                 "[&::-webkit-outer-spin-button]:appearance-none",
                 "[&::-webkit-inner-spin-button]:appearance-none",
-                "[-moz-appearance:textfield] "
+                "[-moz-appearance:textfield] ",
               )}
               placeholder={text.maxRecord}
             />
@@ -427,11 +428,11 @@ const Dropdown = <T,>(
               onClick={() => {
                 const cleared = filters.reduce(
                   (acc, f) => ({ ...acc, [f.key]: false }),
-                  {}
+                  {},
                 );
                 handleFilterChange &&
                   Object.keys(cleared).forEach((key) =>
-                    handleFilterChange(key, false)
+                    handleFilterChange(key, false),
                   );
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(cleared));
                 setMaxFetch("");
@@ -462,7 +463,7 @@ const Dropdown = <T,>(
                 >
                   {(item as any).name ?? JSON.stringify(item)}
                 </div>
-              )
+              ),
             )
           ) : (
             <div className="text-center text-sm text-gray-500">
@@ -472,5 +473,14 @@ const Dropdown = <T,>(
         </div>
       )}
     </div>,
-    document.body
+    document.body,
   );
+export {
+  NastranInputSize,
+  SearchInputProps,
+  FilterItem,
+  BaseSearchInputProps,
+  FetchProps,
+  ApiConfigProps,
+  SearchInputForward,
+};

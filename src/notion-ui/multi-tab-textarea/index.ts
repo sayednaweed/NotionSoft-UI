@@ -1,3 +1,3 @@
-import MultiTabTextarea from "./multi-tab-textarea";
+import { MultiTabTextarea, MultiTabTextareaProps } from "./multi-tab-textarea";
 
-export default MultiTabTextarea;
+export { MultiTabTextarea, type MultiTabTextareaProps };

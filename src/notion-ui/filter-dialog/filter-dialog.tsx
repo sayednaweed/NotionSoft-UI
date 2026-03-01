@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import { DateObject } from "react-multi-date-picker";
-import MultiDatePicker from "@/components/notion-ui/multi-date-picker";
-import Button from "@/components/notion-ui/button";
-import { MultiDatePickerProps } from "@/components/notion-ui/multi-date-picker/multi-date-picker";
+
+import { cn } from "@/utils/cn";
+import { MultiDatePicker } from "@/components/notion-ui/multi-date-picker";
+import { MultiDatePickerProps } from "@/components/notion-ui/multi-date-picker";
 import {
   Card,
   CardContent,
@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/notion-ui/card";
-import { cn } from "@/utils/cn";
-export interface FilterDialogProps {
+import { Button } from "@/components/notion-ui/button";
+interface FilterDialogProps {
   sortOnComplete: (itemName: any) => void;
   searchFilterChanged: (itemName: any) => void;
   orderOnComplete: (itemName: any) => void;
@@ -29,6 +29,14 @@ export interface FilterDialogProps {
     search: boolean;
     date: boolean;
   };
+  translations: {
+    sortPlaceholder?: string;
+    orderPlaceholder?: string;
+    searchPlaceholder?: string;
+    datePlaceholder?: string;
+    searchFilterPlaceholder?: string;
+    cancelPlaceholder?: string;
+  };
   date?: Omit<MultiDatePickerProps, "value" | "dateOnComplete">;
   onCancel: () => void;
 }
@@ -42,10 +50,18 @@ function FilterDialog(props: FilterDialogProps) {
     filtersShowData,
     showColumns,
     date,
+    translations,
     onCancel,
   } = props;
+  const {
+    sortPlaceholder,
+    orderPlaceholder,
+    searchPlaceholder,
+    datePlaceholder,
+    searchFilterPlaceholder,
+    cancelPlaceholder,
+  } = translations;
 
-  const { t } = useTranslation();
   const handleSort = (itemName: string) => {
     sortOnComplete(itemName);
   };
@@ -81,13 +97,15 @@ function FilterDialog(props: FilterDialogProps) {
   return (
     <Card className="sm:self-center [backdrop-filter:blur(20px)] bg-card/80">
       <CardHeader className="relative text-start">
-        <CardTitle>{t("search_filters")}</CardTitle>
+        <CardTitle>
+          {searchFilterPlaceholder ? searchFilterPlaceholder : "Search filters"}
+        </CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 sm:grid-cols-2 sm:flex sm:flex-row gap-x-4 gap-y-6 pb-12">
         {showColumns.sort && (
           <FilterItem
             selected={filters.sort}
-            headerName={t("sort_by")}
+            headerName={sortPlaceholder ? sortPlaceholder : "Sort by"}
             items={sorts ? sorts : []}
           />
         )}
@@ -99,7 +117,7 @@ function FilterDialog(props: FilterDialogProps) {
                 "uppercase text-start font-semibold border-b border-primary/20 pb-2 rtl:text-md ltr:text-xs text-primary"
               }
             >
-              {t("date")}
+              {datePlaceholder ? datePlaceholder : "Date"}
             </h1>
             <MultiDatePicker
               value={filters.date}
@@ -111,33 +129,33 @@ function FilterDialog(props: FilterDialogProps) {
         {showColumns.order && (
           <FilterItem
             selected={filters.order}
-            headerName={t("order")}
+            headerName={orderPlaceholder ? orderPlaceholder : "Order"}
             items={orders ? orders : []}
           />
         )}
         {showColumns.search && (
           <FilterItem
             selected={filters.search.column}
-            headerName={t("search")}
+            headerName={searchPlaceholder ? searchPlaceholder : "Search"}
             items={searchs ? searchs : []}
           />
         )}
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" onClick={onCancel}>
-          {t("cancel")}
+          {cancelPlaceholder ? cancelPlaceholder : "Cancel"}
         </Button>
       </CardFooter>
     </Card>
   );
 }
-export interface IShowData {
+interface IShowData {
   name: string;
   translate: string;
   onClick?: (itemName: string) => void;
 }
 
-export interface FilterItemProps extends React.HTMLAttributes<HTMLDivElement> {
+interface FilterItemProps extends React.HTMLAttributes<HTMLDivElement> {
   headerName: string;
   items: IShowData[];
   selected: string;
@@ -174,4 +192,10 @@ const FilterItem = (props: FilterItemProps) => {
   );
 };
 
-export { FilterDialog, FilterItem };
+export {
+  FilterDialog,
+  FilterItem,
+  FilterDialogProps,
+  IShowData,
+  FilterItemProps,
+};

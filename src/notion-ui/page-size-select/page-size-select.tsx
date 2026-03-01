@@ -192,7 +192,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
         <ChevronDown
           className={cn(
             "size-3 transition-transform",
-            selectData.isOpen && "rotate-180"
+            selectData.isOpen && "rotate-180",
           )}
         />
       </button>
@@ -204,7 +204,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
             ref={dropdownRef}
             className={cn(
               "absolute min-w-fit z-50 bg-card border border-primary/15 shadow-lg",
-              dropDirection === "down" ? "rounded-b-md" : "rounded-t-md"
+              dropDirection === "down" ? "rounded-b-md" : "rounded-t-md",
             )}
             style={{
               top: position.top,
@@ -229,7 +229,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
               <Check
                 className={cn(
                   "size-4 absolute top-2.5 right-2 cursor-pointer",
-                  !selectData.showIcon && "hidden"
+                  !selectData.showIcon && "hidden",
                 )}
                 onClick={async () => {
                   const value = inputRef.current?.value || "10";
@@ -258,7 +258,7 @@ const PageSizeSelect: React.FC<SelectProps> = ({
                     onClick={() => handleSelect(o.value)}
                     className={cn(
                       "px-4 py-2 text-sm cursor-pointer flex justify-between hover:bg-primary/10",
-                      selectData.select.value === o.value && "bg-primary/10"
+                      selectData.select.value === o.value && "bg-primary/10",
                     )}
                   >
                     {o.label}
@@ -270,10 +270,10 @@ const PageSizeSelect: React.FC<SelectProps> = ({
               )}
             </ul>
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );
 };
 
-export default PageSizeSelect;
+export { PageSizeSelect };

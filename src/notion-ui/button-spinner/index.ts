@@ -1,3 +1,3 @@
-import ButtonSpinner from "./button-spinner";
+import { ButtonSpinner, IButtonSpinnerProps } from "./button-spinner";
 
-export default ButtonSpinner;
+export { ButtonSpinner, type IButtonSpinnerProps };

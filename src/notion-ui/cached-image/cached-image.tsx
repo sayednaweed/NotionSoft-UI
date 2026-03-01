@@ -1,4 +1,4 @@
-import Shimmer from "@/components/notion-ui/shimmer";
+import { Shimmer } from "@/components/notion-ui/shimmer";
 import { cn } from "@/utils/cn";
 import React, { useEffect, useState, forwardRef, useRef } from "react";
 
@@ -31,7 +31,7 @@ interface ApiConfigImageProps extends BaseImageProps {
   fetch?: never;
 }
 
-export type ImageProps = FetchImageProps | ApiConfigImageProps;
+type ImageProps = FetchImageProps | ApiConfigImageProps;
 
 /* ---------------------------------- */
 /* Cache helpers */
@@ -40,6 +40,10 @@ export type ImageProps = FetchImageProps | ApiConfigImageProps;
 const IMAGE_CACHE = "image-cache-v1";
 
 async function getCachedImage(url: string): Promise<string | null> {
+  if (typeof window === "undefined" || typeof caches === "undefined") {
+    return null;
+  }
+
   const cache = await caches.open(IMAGE_CACHE);
   const cached = await cache.match(url);
 
@@ -50,6 +54,9 @@ async function getCachedImage(url: string): Promise<string | null> {
 }
 
 async function cacheImage(url: string, response: Response) {
+  if (typeof window === "undefined" || typeof caches === "undefined") {
+    return;
+  }
   const cache = await caches.open(IMAGE_CACHE);
   await cache.put(url, response.clone());
 }
@@ -75,6 +82,21 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const previousUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (previousUrlRef.current?.startsWith("blob:")) {
+      URL.revokeObjectURL(previousUrlRef.current);
+    }
+
+    previousUrlRef.current = imageUrl;
+
+    return () => {
+      if (previousUrlRef.current?.startsWith("blob:")) {
+        URL.revokeObjectURL(previousUrlRef.current);
+      }
+    };
+  }, [imageUrl]);
 
   const { shimmerClassName, shimmerIconClassName } = classNames || {};
 
@@ -83,7 +105,7 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
     fetchRef.current = fetch;
   }, [fetch]);
 
-  async function loadImage() {
+  async function loadImage(signal: AbortSignal) {
     try {
       const resolvedSrc = apiConfig?.src ?? src;
 
@@ -106,8 +128,10 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
       /* ---------------------------------- */
       const cached = await getCachedImage(resolvedSrc);
       if (cached) {
-        setImageUrl(cached);
-        setLoading(false);
+        if (!signal.aborted) {
+          setImageUrl(cached);
+          setLoading(false);
+        }
         return;
       }
 
@@ -118,7 +142,9 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         ? await fetchRef.current(resolvedSrc)
         : await window.fetch(resolvedSrc, {
             headers: apiConfig?.headers,
+            signal,
           });
+      if (signal.aborted) return;
 
       const contentType = response.headers.get("content-type") ?? "";
 
@@ -137,38 +163,35 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) {
+        setLoading(false);
+      }
     }
   }
 
   useEffect(() => {
-    loadImage();
-  }, [src, apiConfig?.src]);
+    const controller = new AbortController();
+    setLoading(true);
 
-  /* ---------------------------------- */
-  /* Cleanup */
-  /* ---------------------------------- */
+    loadImage(controller.signal);
 
-  useEffect(() => {
     return () => {
-      if (imageUrl?.startsWith("blob:")) {
-        URL.revokeObjectURL(imageUrl);
-      }
+      controller.abort();
     };
-  }, [imageUrl]);
+  }, [src, apiConfig?.src]);
 
   /* ---------------------------------- */
   /* UI */
   /* ---------------------------------- */
 
   if (loading || !imageUrl) {
-    const stop = loading ? false : !imageUrl && true;
+    const stop = !loading && !imageUrl;
 
     return (
       <Shimmer
         className={cn(
           "bg-primary/10 mx-auto flex p-2 items-center size-8 rounded border border-tertiary/10",
-          shimmerClassName
+          shimmerClassName,
         )}
         stop={stop}
       >
@@ -182,7 +205,7 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
           strokeLinejoin="round"
           className={cn(
             "stroke-primary/40 mx-auto stroke-2",
-            shimmerIconClassName
+            shimmerIconClassName,
           )}
         >
           <rect x="1" y="1" width="22" height="22" rx="2" ry="2" />
@@ -196,12 +219,10 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   return (
     <div
       ref={ref}
-      // src={imageUrl}
       style={{ backgroundImage: `url(${imageUrl})` }}
-      // alt={alt}
       className={cn(
         "cursor-pointer shadow-lg bg-cover bg-center mx-auto",
-        className
+        className,
       )}
       {...imgProps}
     />
@@ -210,4 +231,4 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
 
 CachedImage.displayName = "CachedImage";
 
-export default CachedImage;
+export { CachedImage, type ImageProps };

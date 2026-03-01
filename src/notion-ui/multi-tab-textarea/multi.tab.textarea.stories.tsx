@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-
-import { OptionalTabs, Tab } from "../tab/tab";
-import MultiTabTextarea from "../multi-tab-textarea";
+import { MultiTabTextarea } from "@/components/notion-ui/multi-tab-textarea";
+import { OptionalTabs, Tab } from "@/components/notion-ui/tab";
 
 const meta: Meta<typeof MultiTabTextarea> = {
   title: "Form/MultiTabTextarea",
@@ -35,7 +34,7 @@ export const Default: Story = {
     });
 
     const [errors, setErrors] = useState<Map<string, string>>(
-      new Map([["description_fr", "French description is required"]])
+      new Map([["description_fr", "French description is required"]]),
     );
 
     const handleChange = (value: string, name: string) => {
@@ -48,7 +47,7 @@ export const Default: Story = {
     const handleTabChanged = (
       key: string,
       value: string,
-      optional?: boolean
+      optional?: boolean,
     ) => {
       console.log("Tab changed:", { key, value, optional });
     };
@@ -117,7 +116,7 @@ export const WithRTLTabs: Story = {
       new Map([
         ["content_ar", "Arabic content must be at least 20 characters"],
         ["content_fa", "فارسی باید حداقل 20 کاراکتر باشد"],
-      ])
+      ]),
     );
 
     return (
@@ -197,7 +196,7 @@ export const WithErrorStates: Story = {
         ["review_en", "Review must be at least 20 characters"],
         ["review_es", "La reseña debe tener al menos 20 caracteres"],
         ["review_fr", "L'avis doit comporter au moins 20 caractères"],
-      ])
+      ]),
     );
 
     return (

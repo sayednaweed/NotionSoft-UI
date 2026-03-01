@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { OptionalTabs, Tab } from "../tab/tab";
-import MultiTabInput from "./multi-tab-input";
+import { MultiTabInput } from "./multi-tab-input";
 
 const meta: Meta<typeof MultiTabInput> = {
   title: "Form/MultiTabInput",
@@ -35,7 +35,7 @@ export const Default: Story = {
     });
 
     const [errors] = useState<Map<string, string>>(
-      new Map([["title_french", "French title is required"]])
+      new Map([["title_french", "French title is required"]]),
     );
 
     return (
@@ -101,7 +101,7 @@ export const WithRTLTabs: Story = {
       new Map([
         ["name_arabic", "Arabic name is required"],
         ["name_farsi", "نام فارسی الزامی است"],
-      ])
+      ]),
     );
 
     return (
@@ -179,7 +179,7 @@ export const WithErrorStates: Story = {
         ["email_english", "Invalid email address"],
         ["email_spanish", "Correo electrónico inválido"],
         ["email_french", "Adresse e-mail invalide"],
-      ])
+      ]),
     );
 
     return (

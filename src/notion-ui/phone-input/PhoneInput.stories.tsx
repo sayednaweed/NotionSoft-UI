@@ -1,5 +1,5 @@
+import { PhoneInput } from "@/components/notion-ui/phone-input";
 import type { Meta, StoryObj } from "@storybook/react";
-import PhoneInput from "./phone-input";
 
 const meta: Meta<typeof PhoneInput> = {
   title: "Form/PhoneInput",
@@ -50,7 +50,7 @@ export const Required: Story = {
 export const WithError: Story = {
   args: {
     label: "Contact Number",
-    errorMessage: "Invalid phone number",
+    error: "Invalid phone number",
   },
 };
 

@@ -1,5 +1,5 @@
-import Button from "../button/button";
-import AnimatedSheet from "./AnimatedSheet";
+import { Button } from "@/components/notion-ui/button";
+import { AnimatedSheet } from "@/components/notion-ui/sheet";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 

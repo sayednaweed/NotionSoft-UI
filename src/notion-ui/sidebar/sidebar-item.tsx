@@ -1,19 +1,18 @@
 import { useMemo, useCallback, memo, useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { useLocation } from "react-router";
-import CachedSvg, {
-  CachedSvgProps,
-} from "@/components/notion-ui/cached-svg/cached-svg";
-import AnimatedItem from "@/components/notion-ui/animated-item";
-import { cn } from "@/utils/cn";
 
-export interface SubPermission {
+import { cn } from "@/utils/cn";
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
+import { CachedSvg, CachedSvgProps } from "@/components/notion-ui/cached-svg";
+
+interface SubPermission {
   id: number;
   name: string;
   is_category: boolean;
 }
 
-export type Permission = {
+type Permission = {
   id: number;
   visible: boolean;
   permission: string;
@@ -21,7 +20,7 @@ export type Permission = {
   sub: Map<number, SubPermission>;
 };
 
-export interface SidebarItemProps {
+interface SidebarItemProps {
   path: string;
   isActive: boolean;
   permission: Permission;
@@ -30,8 +29,7 @@ export interface SidebarItemProps {
   translate?: (key: string) => string;
   classNames?: {};
 }
-
-export const SidebarItem = memo(function SidebarItem({
+const SidebarItem = memo(function SidebarItem({
   isActive,
   navigateTo,
   permission,
@@ -45,7 +43,7 @@ export const SidebarItem = memo(function SidebarItem({
   // Calculate categories and selectedSubId
   const { categories, selectedSubId } = useMemo(() => {
     const subs = Array.from(permission.sub.values()).filter(
-      (sub) => sub.is_category
+      (sub) => sub.is_category,
     );
     const selectedId = Number(location.pathname.split("/").pop());
     return { categories: subs, selectedSubId: selectedId };
@@ -54,7 +52,7 @@ export const SidebarItem = memo(function SidebarItem({
   // Auto-open dropdown if current URL matches any category
   useEffect(() => {
     const matched = categories.find((sub) =>
-      location.pathname.includes(`${path}/${sub.id}`)
+      location.pathname.includes(`${path}/${sub.id}`),
     );
     setShowDropdown(matched ? true : false);
   }, [location.pathname, categories, path]);
@@ -72,7 +70,7 @@ export const SidebarItem = memo(function SidebarItem({
     return () => {
       window.removeEventListener(
         "sidebar-close-dropdowns",
-        handleCloseDropdowns
+        handleCloseDropdowns,
       );
     };
   }, []);
@@ -95,14 +93,14 @@ export const SidebarItem = memo(function SidebarItem({
         e.currentTarget.dispatchEvent(expandEvent);
       }
     },
-    [categories.length, navigateTo, path]
+    [categories.length, navigateTo, path],
   );
 
   const handleCategoryClick = useCallback(
     (cat: SubPermission) => {
       navigateTo(`${path}/${cat.id}`);
     },
-    [navigateTo, path]
+    [navigateTo, path],
   );
 
   const spring = useMemo(
@@ -114,7 +112,7 @@ export const SidebarItem = memo(function SidebarItem({
       },
       intersectionArgs: { rootMargin: "-10% 0%", once: true },
     }),
-    []
+    [],
   );
 
   const dropdownContent = useMemo(() => {
@@ -170,7 +168,7 @@ export const SidebarItem = memo(function SidebarItem({
             isActive
               ? `bg-tertiary/90 text-card dark:text-primary font-semibold`
               : "hover:opacity-75"
-          }`
+          }`,
         )}
         key={permission.permission}
       >
@@ -196,3 +194,4 @@ export const SidebarItem = memo(function SidebarItem({
     </>
   );
 }); // Pass custom comparison function
+export { SubPermission, Permission, SidebarItemProps, SidebarItem };

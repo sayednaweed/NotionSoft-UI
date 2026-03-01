@@ -1,3 +1,7 @@
-import MultiSelectInput from "./multi-select-input";
+import {
+  FilterItem,
+  MultiSelectInputForward,
+  MultiSelectInputProps,
+} from "./multi-select-input";
 
-export default MultiSelectInput;
+export { MultiSelectInputForward, type FilterItem, type MultiSelectInputProps };

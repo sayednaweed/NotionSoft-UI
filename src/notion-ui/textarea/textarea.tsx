@@ -1,11 +1,8 @@
-import React, { useMemo } from "react";
-// import { cn } from "@/utils/cn";
-import { cn } from "../../utils/cn";
-import AnimatedItem from "../../notion-ui/animated-item";
-// import AnimatedItem from "../animated-item";
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
+import { cn } from "@/utils/cn";
+import React from "react";
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   requiredHint?: string;
   label?: string;
   errorMessage?: string;
@@ -25,7 +22,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       readOnly,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const hasError = !!errorMessage;
     const { rootDivClassName } = classNames || {};
@@ -39,12 +36,12 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         className={cn(
           rootDivClassName,
           "flex w-full flex-col justify-end",
-          readOnlyStyle
+          readOnlyStyle,
         )}
       >
         <div
           className={cn(
-            "relative text-start select-none h-fit rtl:text-[17px] ltr:text-[13px]"
+            "relative text-start select-none h-fit rtl:text-[17px] ltr:text-[13px]",
           )}
         >
           {/* Required Hint */}
@@ -52,7 +49,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             <span
               className={cn(
                 "absolute font-semibold text-red-600 rtl:text-[13px] ltr:text-[11px] ltr:right-2.5 rtl:left-2.5",
-                heightStyle.required
+                heightStyle.required,
               )}
             >
               {requiredHint}
@@ -64,7 +61,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             <label
               htmlFor={label}
               className={cn(
-                "font-semibold rtl:text-md ltr:text-[13px] inline-block pb-1"
+                "font-semibold rtl:text-md ltr:text-[13px] inline-block pb-1",
               )}
             >
               {label}
@@ -81,7 +78,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
               "border-input placeholder:text-muted-foreground focus-visible:border-ring-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-70 md:text-sm focus-visible:border-tertiary/60 focus-visible:shadow-sm",
               "placeholder:text-primary/60 ltr:text-sm rtl:text-sm rtl:font-semibold",
               hasError && "border-red-400",
-              className
+              className,
             )}
             {...rest}
             disabled={readOnly}
@@ -115,7 +112,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
-export default Textarea;
+export { Textarea, TextareaProps };

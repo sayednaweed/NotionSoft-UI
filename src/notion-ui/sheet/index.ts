@@ -1,3 +1,3 @@
-import AnimatedSheet from "./AnimatedSheet";
+import { AnimatedSheet } from "./animated-sheet";
 
-export default AnimatedSheet;
+export { AnimatedSheet };

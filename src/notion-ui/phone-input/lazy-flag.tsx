@@ -60,7 +60,7 @@ export const LazyFlag: React.FC<{
           io.disconnect();
         }
       },
-      { rootMargin: "550px" }
+      { rootMargin: "550px" },
     );
 
     io.observe(el);

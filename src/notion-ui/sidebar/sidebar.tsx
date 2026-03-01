@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 import { AlignLeft, type LucideIcon } from "lucide-react";
 
-export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
+interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   collapsed?: boolean;
   setCollapsed?: (open: boolean) => void;
@@ -71,7 +71,7 @@ const Sidebar: SidebarCompound = ({
     if (sidebarRef.current) {
       sidebarRef.current.addEventListener(
         "sidebar-item-expand",
-        handleExpandEvent
+        handleExpandEvent,
       );
     }
 
@@ -79,7 +79,7 @@ const Sidebar: SidebarCompound = ({
       if (sidebarRef.current) {
         sidebarRef.current.removeEventListener(
           "sidebar-item-expand",
-          handleExpandEvent
+          handleExpandEvent,
         );
       }
     };
@@ -148,7 +148,7 @@ const Sidebar: SidebarCompound = ({
           hideSiderbar
             ? "w-screen h-screen bg-black/20" // Full screen with semi-transparent bg
             : "w-auto h-auto", // Just icon size
-          wrapperClassName
+          wrapperClassName,
         )}
       >
         <mobileHamburgerIcon.icon
@@ -160,7 +160,7 @@ const Sidebar: SidebarCompound = ({
           className={cn(
             `size-5 mt-2 text-tertiary hover:scale-105 transition-transform mx-auto cursor-pointer`,
             hideSiderbar ? "hidden" : "block",
-            mobileHamburgerIcon.className
+            mobileHamburgerIcon.className,
           )}
         />
       </div>
@@ -179,14 +179,14 @@ const Sidebar: SidebarCompound = ({
           open ? "lg:w-12!" : "lg:w-[280px]",
           // Mobile width
           `w-[280px]`, // Set a proper width for mobile too
-          className
+          className,
         )}
       >
         <desktopHamburgerIcon.icon
           onClick={toggle}
           className={cn(
             `size-5 mt-2 text-tertiary hidden lg:block hover:scale-105 transition-transform mx-auto cursor-pointer`,
-            desktopHamburgerIcon.className
+            desktopHamburgerIcon.className,
           )}
         />
         {header}
@@ -196,11 +196,10 @@ const Sidebar: SidebarCompound = ({
     </>
   );
 };
-export interface SidebarContentProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarContentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 // Use forwardRef to accept ref prop
-export const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
+const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
   function SidebarContent({ children, className, ...rest }, ref) {
     return (
       <div
@@ -208,21 +207,20 @@ export const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
         {...rest}
         className={cn(
           "overflow-y-auto flex flex-col overflow-x-hidden pb-12",
-          className
+          className,
         )}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 SidebarContent.displayName = "SidebarContent";
 
-export interface SidebarFooterProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const SidebarFooter = forwardRef<HTMLDivElement, SidebarContentProps>(
+const SidebarFooter = forwardRef<HTMLDivElement, SidebarContentProps>(
   ({ children, className, ...rest }, ref) => {
     return (
       <div
@@ -230,21 +228,20 @@ export const SidebarFooter = forwardRef<HTMLDivElement, SidebarContentProps>(
         {...rest}
         className={cn(
           "sticky w-full overflow-x-hidden bottom-0 z-50 flex flex-col items-center gap-y-1 border-t border-secondary-foreground/15 pt-4 mt-4 bg-transparent",
-          className
+          className,
         )}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 SidebarFooter.displayName = "SidebarFooter";
 
-export interface SidebarHeaderProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const SidebarHeader = forwardRef<HTMLDivElement, SidebarContentProps>(
+const SidebarHeader = forwardRef<HTMLDivElement, SidebarContentProps>(
   ({ children, className, ...rest }, ref) => {
     return (
       <div
@@ -252,21 +249,23 @@ export const SidebarHeader = forwardRef<HTMLDivElement, SidebarContentProps>(
         {...rest}
         className={cn(
           "sticky w-full overflow-x-hidden top-0 z-50 flex flex-col justify-center items-center gap-y-1 border-b border-secondary-foreground/15 pb-4 mt-2 bg-transparent",
-          className
+          className,
         )}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 SidebarHeader.displayName = "SidebarHeader";
 
-export interface SeparatorProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {}
+interface SeparatorProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {}
 
-export function Separator({ className, ...rest }: SeparatorProps) {
+function Separator({ className, ...rest }: SeparatorProps) {
   return (
     <div
       {...rest}
@@ -281,4 +280,15 @@ Sidebar.Header = SidebarHeader;
 Sidebar.Footer = SidebarFooter;
 Sidebar.Content = SidebarContent;
 
-export default Sidebar;
+export {
+  SidebarProps,
+  Sidebar,
+  Separator,
+  SidebarHeaderProps,
+  SidebarContentProps,
+  SidebarContent,
+  SidebarFooterProps,
+  SidebarFooter,
+  SidebarHeader,
+  SeparatorProps,
+};

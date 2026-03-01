@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Meta, StoryFn } from "@storybook/react";
-import MultiSelectInputForward, {
+import {
+  MultiSelectInputForward,
   MultiSelectInputProps,
-} from "./multi-select-input";
+} from "@/components/notion-ui/multi-select-input";
 
 interface User {
   uuid: string;
@@ -53,15 +54,15 @@ const mockUsers: User[] = [
 const fetchUsers = async (
   query: string,
   filters?: Record<string, boolean>,
-  maxFetch?: number
+  maxFetch?: number,
 ) => {
   let result = mockUsers;
 
   if (filters) {
     result = result.filter((user) =>
       Object.entries(filters).every(([key, value]) =>
-        value ? (user as any)[key] : true
-      )
+        value ? (user as any)[key] : true,
+      ),
     );
   }
 
@@ -69,7 +70,7 @@ const fetchUsers = async (
     const q = query.toLowerCase();
     result = result.filter(
       (u) =>
-        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
     );
   }
 
@@ -117,7 +118,6 @@ MultipleSelection.args = {
     { key: "admin", name: "Admin" },
   ],
   text: {
-    fetch: "Loading users...",
     notItem: "No users found",
     maxRecord: "Max results",
     clearFilters: "Clear Filters",
@@ -136,7 +136,6 @@ SingleSelection.args = {
     { key: "admin", name: "Admin" },
   ],
   text: {
-    fetch: "Loading users...",
     notItem: "No users found",
     maxRecord: "Max results",
     clearFilters: "Clear Filters",
@@ -156,9 +155,7 @@ APIConfigExample.args = {
     { key: "active", name: "Active" },
     { key: "admin", name: "Admin" },
   ],
-  itemKey: "id", // JSONPlaceholder uses `id` as key
   text: {
-    fetch: "Fetching users from API...",
     notItem: "No users found",
     maxRecord: "Max results",
     clearFilters: "Clear Filters",

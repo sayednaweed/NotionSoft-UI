@@ -1,5 +1,5 @@
+import { CachedImage, ImageProps } from "@/components/notion-ui/cached-image";
 import type { Meta, StoryObj } from "@storybook/react";
-import CachedImage, { ImageProps } from "./cached-image";
 
 /* ---------------------------------- */
 /* Helpers */
@@ -52,7 +52,7 @@ type Story = StoryObj<ImageProps>;
 // Default (fetch + cache)
 export const Default: Story = {
   args: {
-    src: "/images/sample.jpg",
+    src: "https://picsum.photos/200",
     fetch: fetchImage,
     className: "w-40 h-40 rounded-md",
   },
@@ -62,7 +62,7 @@ export const Default: Story = {
 export const WithApiConfig: Story = {
   args: {
     apiConfig: {
-      src: "/images/sample.jpg",
+      src: "https://picsum.photos/200",
     },
     className: "w-40 h-40 rounded-lg",
   },
@@ -73,14 +73,14 @@ export const CrossOrigin: Story = {
   args: {
     src: "https://picsum.photos/200",
     fetch: fetchImage,
-    className: "w-40 h-40 rounded-full",
+    className: "w-40 h-40 rounded-full border/10",
   },
 };
 
 // Loading / shimmer state
 export const LoadingState: Story = {
   args: {
-    src: "/images/sample.jpg",
+    src: "https://picsum.photos/200",
     fetch: delayedFetch,
     className: "w-32 h-32",
     classNames: {
@@ -93,7 +93,7 @@ export const LoadingState: Story = {
 // Small size
 export const Small: Story = {
   args: {
-    src: "/images/sample.jpg",
+    src: "https://picsum.photos/200",
     fetch: fetchImage,
     className: "w-16 h-16 rounded",
   },
@@ -102,7 +102,7 @@ export const Small: Story = {
 // Large size
 export const Large: Story = {
   args: {
-    src: "/images/sample.jpg",
+    src: "https://picsum.photos/200",
     fetch: fetchImage,
     className: "w-64 h-64 rounded-xl",
   },

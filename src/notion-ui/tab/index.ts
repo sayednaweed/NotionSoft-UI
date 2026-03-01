@@ -1,3 +1,3 @@
-import Tab from "./tab";
+import { TabState, Tab, OptionalTabs } from "./tab";
 
-export default Tab;
+export { Tab, type TabState, OptionalTabs };

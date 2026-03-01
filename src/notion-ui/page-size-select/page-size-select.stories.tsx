@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import PageSizeSelect from "./page-size-select";
+import { PageSizeSelect } from "./page-size-select";
 
 const meta: Meta<typeof PageSizeSelect> = {
   title: "Select/PageSizeSelect",

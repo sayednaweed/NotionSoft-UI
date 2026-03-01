@@ -1,3 +1,9 @@
-import Shimmer from "./shimmer";
+import {
+  Shimmer,
+  ShimmerItem,
+  ShimmerItemProps,
+  ShimmerProps,
+} from "./shimmer";
 
-export default Shimmer;
+export type { ShimmerProps, ShimmerItemProps };
+export { Shimmer, ShimmerItem };

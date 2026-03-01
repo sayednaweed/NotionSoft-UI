@@ -1,3 +1,3 @@
-import DatePicker from "./date-picker";
+import { DatePicker, DatePickerSize, DatePickerProps } from "./date-picker";
 
-export default DatePicker;
+export { type DatePickerProps, type DatePickerSize, DatePicker };

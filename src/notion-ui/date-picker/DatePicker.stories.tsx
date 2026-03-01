@@ -2,11 +2,13 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import DateObject from "react-date-object";
 
-import DatePicker, { DatePickerProps } from "./date-picker";
-
 // Persian
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import {
+  DatePicker,
+  DatePickerProps,
+} from "@/components/notion-ui/date-picker";
 
 export default {
   title: "Date/DatePicker",
@@ -20,7 +22,7 @@ const Wrapper = (args: DatePickerProps) => {
   const [value, setValue] = React.useState<DateObject | undefined>(
     typeof args.value === "string"
       ? new DateObject(new Date(args.value))
-      : args.value
+      : args.value,
   );
 
   return (

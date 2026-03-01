@@ -1,3 +1,3 @@
-import { AnimatedItem } from "./animated-item";
+import { AnimatedItem, AnimatedItemProps } from "./animated-item";
 
-export default AnimatedItem;
+export { AnimatedItem, type AnimatedItemProps };

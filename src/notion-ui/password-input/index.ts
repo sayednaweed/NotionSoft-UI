@@ -1,3 +1,7 @@
-import PasswordInput from "./password-input";
+import {
+  PasswordInput,
+  PasswordInputProps,
+  PasswordInputText,
+} from "./password-input";
 
-export default PasswordInput;
+export { PasswordInput, PasswordInputProps, type PasswordInputText };

@@ -1,3 +1,3 @@
-import CachedSvg from "./cached-svg";
+import { CachedSvg, CachedSvgProps } from "./cached-svg";
 
-export default CachedSvg;
+export { CachedSvg, type CachedSvgProps };

@@ -8,7 +8,7 @@ import {
 } from "@react-spring/web";
 import { useCallback, useState } from "react";
 
-export interface AnimatedItemProps {
+interface AnimatedItemProps {
   springProps: {
     from?: object;
     to?: object | object[];
@@ -20,7 +20,7 @@ export interface AnimatedItemProps {
     onStart?: (
       result: AnimationResult,
       spring: Controller | SpringValue,
-      item?: any
+      item?: any,
     ) => void;
     config?: {
       mass: number;
@@ -32,14 +32,14 @@ export interface AnimatedItemProps {
   children: React.ReactNode | ((inView: boolean) => React.ReactNode);
 }
 
-export function AnimatedItem(props: AnimatedItemProps) {
+function AnimatedItem(props: AnimatedItemProps) {
   const [inView, setInView] = useState(false);
   const { springProps, intersectionArgs, children } = props;
   const defaultOnStart = useCallback(
     () => {
       setInView(true);
     },
-    [] // no dependencies, memoized once
+    [], // no dependencies, memoized once
   );
   const composedOnStart = springProps.onStart ?? defaultOnStart;
 
@@ -52,3 +52,5 @@ export function AnimatedItem(props: AnimatedItemProps) {
     </animated.div>
   );
 }
+
+export { AnimatedItem, AnimatedItemProps };

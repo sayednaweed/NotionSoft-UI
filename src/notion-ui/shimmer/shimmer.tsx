@@ -1,14 +1,10 @@
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
-export interface ShimmerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ShimmerProps extends React.HTMLAttributes<HTMLDivElement> {
   stop?: boolean;
 }
 
-export default function Shimmer({
-  stop = false,
-  className,
-  children,
-}: ShimmerProps) {
+function Shimmer({ stop = false, className, children }: ShimmerProps) {
   return (
     <div
       className={cn("relative w-full overflow-hidden *:rounded-sm", className)}
@@ -44,10 +40,10 @@ export default function Shimmer({
     </div>
   );
 }
-export interface ShimmerItemProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface ShimmerItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function ShimmerItem(props: ShimmerItemProps) {
+function ShimmerItem(props: ShimmerItemProps) {
   const { className } = props;
   return <div className={cn(`h-10 bg-primary/5`, className)} />;
 }
+export { Shimmer, ShimmerProps, ShimmerItem, ShimmerItemProps };

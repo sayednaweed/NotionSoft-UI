@@ -1,9 +1,8 @@
-// Pagination.stories.tsx
+import { Pagination } from "./pagination";
 import type { Meta, StoryObj } from "@storybook/react";
-import Pagination from "./pagination";
 
 const meta: Meta<typeof Pagination> = {
-  title: "Components/Pagination",
+  title: "Table/Pagination",
   component: Pagination,
   parameters: {
     layout: "centered",

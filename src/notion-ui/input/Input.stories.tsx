@@ -1,4 +1,4 @@
-import Input from "./input";
+import { Input } from "./input";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Search, AlertTriangle } from "lucide-react";
 
@@ -23,7 +23,7 @@ const meta: Meta<typeof Input> = {
 export default meta;
 type Story = StoryObj<typeof Input>;
 
-const Template = (args) => (
+const Template = (args: any) => (
   <div className="w-[350px]">
     <Input {...args} />
   </div>

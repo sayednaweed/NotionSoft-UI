@@ -1,13 +1,12 @@
 import {
   Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
+  CardFooter,
   CardTitle,
-} from "@/components/notion-ui/card/card";
-
+  CardAction,
+  CardDescription,
+  CardContent,
+} from "./card";
 export {
   Card,
   CardHeader,

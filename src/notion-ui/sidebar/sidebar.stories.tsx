@@ -1,32 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { MemoryRouter, Route, Routes } from "react-router";
-import { I18nextProvider } from "react-i18next";
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-
 import { LucideCircleArrowOutDownLeft } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { SidebarItem } from "@/components/notion-ui/sidebar/sidebar-item";
-import Sidebar, { Separator } from "@/components/notion-ui/sidebar/sidebar";
-import Button from "@/components/notion-ui/button";
 
-/* ------------------ i18n Mock ------------------ */
-i18n.use(initReactI18next).init({
-  lng: "en",
-  fallbackLng: "en",
-  resources: {
-    en: {
-      translation: {
-        app_name: "My App",
-        dashboard: "Dashboard",
-        settings: "Settings",
-        users: "Users",
-        roles: "Roles",
-        exit_dashb: "Exit",
-      },
-    },
-  },
-});
+import {
+  Separator,
+  Sidebar,
+  SidebarItem,
+} from "@/components/notion-ui/sidebar";
+import { Button } from "@/components/notion-ui/button";
 
 /* ------------------ Mock Data ------------------ */
 
@@ -36,11 +18,11 @@ const permissions = new Map([
     {
       id: 1,
       visible: true,
-      permission: "users",
+      permission: "Users",
       icon: "icons/users.svg",
       sub: new Map([
-        [1, { id: 1, name: "roles", is_category: true }],
-        [2, { id: 2, name: "permissions", is_category: true }],
+        [1, { id: 1, name: "Roles", is_category: true }],
+        [2, { id: 2, name: "Permissions", is_category: true }],
       ]),
     },
   ],
@@ -49,7 +31,7 @@ const permissions = new Map([
     {
       id: 2,
       visible: true,
-      permission: "reports",
+      permission: "Reports",
       icon: "icons/reports.svg",
       sub: new Map(),
     },
@@ -73,13 +55,13 @@ function StorySidebar() {
           permission={{
             id: 0,
             visible: true,
-            permission: "dashboard",
+            permission: "Dashboard",
             icon: "icons/home.svg",
             sub: new Map(),
           }}
           isActive
           navigateTo={navigateTo}
-          translate={(k) => i18n.t(k)}
+          // ✅ no translate prop
           icon={{
             apiConfig: {
               src: "https://www.svgrepo.com/show/521994/bag.svg",
@@ -90,11 +72,10 @@ function StorySidebar() {
         {Array.from(permissions.values()).map((perm) => (
           <SidebarItem
             key={perm.permission}
-            path={`/dashboard/${perm.permission}`}
+            path={`/dashboard/${String(perm.permission).toLowerCase()}`}
             permission={perm}
             isActive={false}
             navigateTo={navigateTo}
-            translate={(k) => i18n.t(k)}
             icon={{
               apiConfig: {
                 src: "https://www.svgrepo.com/show/521994/bag.svg",
@@ -110,13 +91,12 @@ function StorySidebar() {
           permission={{
             id: 99,
             visible: true,
-            permission: "settings",
+            permission: "Settings",
             icon: "icons/settings.svg",
             sub: new Map(),
           }}
           isActive={false}
           navigateTo={navigateTo}
-          translate={(k) => i18n.t(k)}
           icon={{
             apiConfig: {
               src: "https://www.svgrepo.com/show/521994/bag.svg",
@@ -133,9 +113,10 @@ function StorySidebar() {
         <img
           src="https://placehold.co/48x40"
           className="w-12 h-10 rounded-lg"
+          alt="logo"
         />
-        <h1 className={`text-sm font-semibold ${collapsed && "lg:hidden"}`}>
-          {i18n.t("app_name")}
+        <h1 className={`text-sm font-semibold ${collapsed ? "lg:hidden" : ""}`}>
+          My App
         </h1>
       </Sidebar.Header>
 
@@ -148,9 +129,7 @@ function StorySidebar() {
           className="mb-4 mx-auto text-xs font-semibold"
         >
           <LucideCircleArrowOutDownLeft className="size-[18px]" />
-          <span className={collapsed ? "lg:hidden" : ""}>
-            {i18n.t("exit_dashb")}
-          </span>
+          <span className={collapsed ? "lg:hidden" : ""}>Exit</span>
         </Button>
       </Sidebar.Footer>
     </Sidebar>
@@ -171,11 +150,9 @@ export default meta;
 export const Default: StoryObj = {
   render: () => (
     <MemoryRouter initialEntries={["/dashboard"]}>
-      <I18nextProvider i18n={i18n}>
-        <Routes>
-          <Route path="*" element={<StorySidebar />} />
-        </Routes>
-      </I18nextProvider>
+      <Routes>
+        <Route path="*" element={<StorySidebar />} />
+      </Routes>
     </MemoryRouter>
   ),
 };

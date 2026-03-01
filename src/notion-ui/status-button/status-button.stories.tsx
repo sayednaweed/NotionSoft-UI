@@ -1,4 +1,4 @@
-import StatusButton from "./status-button";
+import { StatusButton } from "@/components/notion-ui/status-button";
 import type { Meta, StoryObj } from "@storybook/react";
 
 // --------------------------------------------

@@ -6,12 +6,13 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { buildNestedFiltersQuery, cn, useDebounce } from "../../utils/cn";
-import Input from "../input";
 import { Check, Eraser, List, ListFilter, LoaderCircle, X } from "lucide-react";
-import { NastranInputSize } from "../input/input";
+import { useDebounce } from "@/utils/hook";
+import { cn } from "@/utils/cn";
+import { Input, NastranInputSize } from "@/components/notion-ui/input";
+import { buildNestedFiltersQuery } from "@/utils/helper";
 
-export interface FilterItem {
+interface FilterItem {
   key: string;
   name: string;
 }
@@ -21,14 +22,14 @@ interface FetchConfig {
   params?: string;
 }
 
-export type MultiSelectInputProps<T = any> = Omit<
+type MultiSelectInputProps<T = any> = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "onSelect"
 > & {
   fetch?: (
     value: string,
     filters?: Record<string, boolean>,
-    maxFetch?: number
+    maxFetch?: number,
   ) => Promise<T[]>;
   apiConfig?: FetchConfig;
 
@@ -66,7 +67,7 @@ export type MultiSelectInputProps<T = any> = Omit<
         fetch: (
           value: string,
           filters?: Record<string, boolean>,
-          maxFetch?: number
+          maxFetch?: number,
         ) => Promise<T[]>;
         apiConfig?: any;
       }
@@ -103,7 +104,7 @@ function MultiSelectInputInner<T = any>(
     onClear,
     ...props
   }: MultiSelectInputProps<T>,
-  ref: React.Ref<HTMLInputElement>
+  ref: React.Ref<HTMLInputElement>,
 ) {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -121,7 +122,7 @@ function MultiSelectInputInner<T = any>(
         if (saved) return JSON.parse(saved);
       } catch {}
       return filters.reduce((acc, f) => ({ ...acc, [f.key]: false }), {});
-    }
+    },
   );
   const [dropDirection, setDropDirection] = useState<"down" | "up">("down");
 
@@ -135,14 +136,14 @@ function MultiSelectInputInner<T = any>(
   });
 
   const [selectedItems, setSelectedItems] = useState<T[]>(
-    Array.isArray(selected) ? selected : selected ? [selected] : []
+    Array.isArray(selected) ? selected : selected ? [selected] : [],
   );
   useEffect(() => {
     const newSelected = Array.isArray(selected)
       ? selected
       : selected
-      ? [selected]
-      : [];
+        ? [selected]
+        : [];
     const key = itemKey as keyof T;
 
     setSelectedItems((prev) => {
@@ -165,7 +166,7 @@ function MultiSelectInputInner<T = any>(
   }, [selected]);
 
   const [pendingSelection, setPendingSelection] = useState<T[] | T | null>(
-    null
+    null,
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -193,12 +194,12 @@ function MultiSelectInputInner<T = any>(
           data = await fetchRef.current(
             debouncedValue,
             filtersState,
-            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined
+            maxFetch && !isNaN(Number(maxFetch)) ? Number(maxFetch) : undefined,
           );
         } else if (apiConfig) {
           // Only include active filters
           const activeFilters = Object.fromEntries(
-            Object.entries(filtersState).filter(([_, v]) => v)
+            Object.entries(filtersState).filter(([_, v]) => v),
           );
 
           // Build nested filters query
@@ -323,7 +324,7 @@ function MultiSelectInputInner<T = any>(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
     },
-    []
+    [],
   );
 
   const handleFilterChange = (key: string, value: boolean) => {
@@ -399,7 +400,7 @@ function MultiSelectInputInner<T = any>(
       itemKey,
       setSelectedItems,
       setInputValue,
-      onItemsSelect
+      onItemsSelect,
     );
 
   const selectedItemsIcon = selectedItems.length > 0 && (
@@ -455,7 +456,7 @@ function MultiSelectInputInner<T = any>(
                   }}
                   className={cn(
                     "text-primary/50 hover:bg-tertiary/10 hover:text-tertiary size-[38px] p-3 cursor-pointer rounded transition-colors",
-                    showFilters && "text-tertiary"
+                    showFilters && "text-tertiary",
                   )}
                 />
               )}
@@ -469,12 +470,12 @@ function MultiSelectInputInner<T = any>(
 }
 
 const MultiSelectInputForward = React.forwardRef(MultiSelectInputInner) as <
-  T = any
+  T = any,
 >(
-  props: MultiSelectInputProps<T> & { ref?: React.Ref<HTMLInputElement> }
+  props: MultiSelectInputProps<T> & { ref?: React.Ref<HTMLInputElement> },
 ) => React.ReactElement;
 
-export default MultiSelectInputForward;
+MultiSelectInputForward;
 
 // ---------------- Dropdown ----------------
 const Dropdown = <T,>(
@@ -505,7 +506,7 @@ const Dropdown = <T,>(
   itemKey?: keyof T,
   setSelectedItems?: React.Dispatch<React.SetStateAction<T[]>>,
   setInputValue?: React.Dispatch<React.SetStateAction<string>>,
-  onItemsSelect?: (selected: T | T[]) => void
+  onItemsSelect?: (selected: T | T[]) => void,
 ) =>
   !isFetching &&
   createPortal(
@@ -513,7 +514,7 @@ const Dropdown = <T,>(
       ref={dropdownRef}
       className={cn(
         "absolute z-50 border border-border ltr:text-xs ltr:sm:text-sm rtl:text-sm rtl:font-semibold bg-card shadow-lg pb-2",
-        dropDirection === "down" ? "rounded-b" : "rounded-t"
+        dropDirection === "down" ? "rounded-b" : "rounded-t",
       )}
       style={{ top: position.top, left: position.left, width: position.width }}
     >
@@ -544,7 +545,7 @@ const Dropdown = <T,>(
                   if (STORAGE_KEY)
                     localStorage.setItem(
                       `${STORAGE_KEY}_MAX_FETCH`,
-                      JSON.stringify(value)
+                      JSON.stringify(value),
                     );
                 }
               }}
@@ -555,7 +556,7 @@ const Dropdown = <T,>(
                 "focus-visible:border-tertiary/60",
                 "[&::-webkit-outer-spin-button]:appearance-none",
                 "[&::-webkit-inner-spin-button]:appearance-none",
-                "[-moz-appearance:textfield]"
+                "[-moz-appearance:textfield]",
               )}
               placeholder={text.maxRecord}
             />
@@ -568,10 +569,10 @@ const Dropdown = <T,>(
                 // Clear filters
                 const cleared = filters.reduce(
                   (acc, f) => ({ ...acc, [f.key]: false }),
-                  {}
+                  {},
                 );
                 Object.keys(cleared).forEach((key) =>
-                  handleFilterChange(key, false)
+                  handleFilterChange(key, false),
                 );
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(cleared));
 
@@ -619,7 +620,7 @@ const Dropdown = <T,>(
               const keyVal = itemKey ? (item as any)[itemKey] : index;
               const isSelected =
                 selectedItems?.some(
-                  (i) => itemKey && (i as any)[itemKey] == keyVal
+                  (i) => itemKey && (i as any)[itemKey] == keyVal,
                 ) ?? false;
 
               const displayValue = Array.isArray(searchBy)
@@ -633,7 +634,7 @@ const Dropdown = <T,>(
                   key={keyVal}
                   className={cn(
                     "px-3 flex items-center gap-x-1 py-1 hover:bg-primary/5 cursor-pointer",
-                    isSelected && "bg-primary/5"
+                    isSelected && "bg-primary/5",
                   )}
                   onClick={() => handleItemClick?.(item)}
                 >
@@ -650,5 +651,7 @@ const Dropdown = <T,>(
         </div>
       )}
     </div>,
-    document.body
+    document.body,
   );
+
+export { MultiSelectInputForward, FilterItem, MultiSelectInputProps };

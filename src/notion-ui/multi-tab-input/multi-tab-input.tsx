@@ -1,12 +1,10 @@
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
+import { Input, NastranInputSize } from "@/components/notion-ui/input";
+import { OptionalTabs, Tab, TabState } from "@/components/notion-ui/tab";
+import { cn } from "@/utils/cn";
 import React, { type ReactElement, useState, useMemo } from "react";
-import { cn } from "../../utils/cn";
-import AnimatedItem from "../animated-item";
-import type { TabState } from "../tab/tab";
-import Input, { NastranInputSize } from "../input/input";
-import { OptionalTabs, Tab } from "../tab/tab";
 
-export interface MultiTabInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface MultiTabInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   children:
     | ReactElement<typeof Tab>
     | ReactElement<typeof Tab>[]
@@ -111,7 +109,7 @@ const MultiTabInput = React.forwardRef<HTMLInputElement, MultiTabInputProps>(
           onClick: () => handleTabChange(tabName, optional),
           className: cn(
             tab.props.className,
-            tabHasError && "text-red-400 border-red-400"
+            tabHasError && "text-red-400 border-red-400",
           ),
         });
       });
@@ -163,7 +161,7 @@ const MultiTabInput = React.forwardRef<HTMLInputElement, MultiTabInputProps>(
           <div
             className={cn(
               "flex flex-wrap gap-2 items-center",
-              tabsDivClassName
+              tabsDivClassName,
             )}
           >
             {renderTabs(mandatoryTabs)}
@@ -191,13 +189,13 @@ const MultiTabInput = React.forwardRef<HTMLInputElement, MultiTabInputProps>(
               errorMessage.length > 0 &&
               "border-red-400 border-b!"
             }`,
-            className
+            className,
           )}
         />
         {errorMessage}
       </div>
     );
-  }
+  },
 );
 
-export default MultiTabInput;
+export { MultiTabInput, MultiTabInputProps };

@@ -1,38 +1,70 @@
-import CircleLoader from "./circle-loader"; // Adjust the import path as needed
-import { CircleLoaderProps } from "./circle-loader";
+import type { Meta, StoryObj } from "@storybook/react";
+import { CircleLoader, type CircleLoaderProps } from "./circle-loader";
 
-// Meta information for Storybook
-export default {
-  title: "Loader/CircleLoader", // This will be the folder and component name in Storybook's sidebar
-  component: CircleLoader, // The component being showcased
+const meta: Meta<typeof CircleLoader> = {
+  title: "Loader/CircleLoader",
+  component: CircleLoader,
+  tags: ["autodocs"],
   argTypes: {
+    label: { control: "text" },
     className: { control: "text" },
     labelclassname: { control: "text" },
-    label: { control: "text" },
     parentClassName: { control: "text" },
   },
-} as const;
-
-// Template to generate different versions of the CircleLoader component
-const Template = (args: CircleLoaderProps) => <CircleLoader {...args} />;
-
-// Default story with default props
-export const Default = Template.bind({});
-Default.args = {
-  label: "Loading...",
+  args: {
+    label: "Loading...",
+  },
+  parameters: {
+    layout: "centered",
+  },
 };
 
-// Story with a custom label
-export const WithCustomLabel = Template.bind({});
-WithCustomLabel.args = {
-  label: "Please wait while we fetch data...",
+export default meta;
+
+type Story = StoryObj<typeof CircleLoader>;
+
+export const Default: Story = {};
+
+export const WithCustomLabel: Story = {
+  args: {
+    label: "Fetching data...",
+  },
 };
 
-// Story with custom styles (for demonstration purposes)
-export const WithCustomStyles = Template.bind({});
-WithCustomStyles.args = {
-  label: "Fetching resources...",
-  className: "text-blue-500", // Custom SVG color
-  labelclassname: "text-lg font-bold", // Custom label styling
-  parentClassName: "bg-gray-200 p-4", // Custom container styling
+export const BiggerSpinner: Story = {
+  args: {
+    // Tailwind classes to control svg size (component default is w-8 h-8)
+    className: "w-12 h-12",
+    label: "Please wait",
+  },
+};
+
+export const MutedLabel: Story = {
+  args: {
+    label: "Loading",
+    labelclassname: "opacity-60 font-normal",
+  },
+};
+
+export const InContainer: Story = {
+  render: (args: CircleLoaderProps) => (
+    <div className="w-[320px] h-[180px] border rounded-md flex items-center justify-center">
+      <CircleLoader {...args} />
+    </div>
+  ),
+  args: {
+    label: "Loading inside a box",
+  },
+};
+
+export const AlignStart: Story = {
+  args: {
+    parentClassName: "items-start justify-start",
+    label: "Top-left alignment",
+  },
+  render: (args: CircleLoaderProps) => (
+    <div className="w-[320px] h-[180px] border rounded-md p-4">
+      <CircleLoader {...args} />
+    </div>
+  ),
 };

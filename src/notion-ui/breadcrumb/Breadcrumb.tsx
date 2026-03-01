@@ -13,13 +13,13 @@ const Breadcrumb = React.forwardRef<HTMLDivElement, BreadcrumbProps>(
         {...rest}
         className={cn(
           "rounded-sm px-5 items-center border border-primary/15 bg-card w-full sm:w-fit overflow-x-auto flex gap-x-4",
-          className
+          className,
         )}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 interface BreadcrumbSeparatorProps extends React.SVGProps<SVGSVGElement> {}
@@ -40,7 +40,7 @@ const BreadcrumbSeparator = React.forwardRef<
       aria-hidden="true"
       className={cn(
         "text-primary/15 min-h-9 min-w-4 h-9 w-4 rtl:rotate-180",
-        className
+        className,
       )}
     >
       <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z"></path>
@@ -60,13 +60,13 @@ const BreadcrumbItem = React.forwardRef<HTMLDivElement, BreadcrumbItemProps>(
         {...rest}
         className={cn(
           "text-primary/70 rtl:pt-0.5 hover:text-primary text-nowrap capitalize cursor-pointer transition-colors duration-200 font-medium rtl:text-4 ltr:text-xs",
-          className
+          className,
         )}
       >
         {children}
       </div>
     );
-  }
+  },
 );
 
 interface BreadcrumbHomeProps extends React.SVGProps<SVGSVGElement> {}
@@ -85,7 +85,7 @@ const BreadcrumbHome = React.forwardRef<SVGSVGElement, BreadcrumbHomeProps>(
         // data-slot="icon"
         className={cn(
           "text-primary/60 fill-primary/60 hover:scale-105 min-w-4 min-h-4 size-4 hover:fill-primary/90 transition-[fill] duration-300 cursor-pointer",
-          className
+          className,
         )}
       >
         <path
@@ -95,7 +95,7 @@ const BreadcrumbHome = React.forwardRef<SVGSVGElement, BreadcrumbHomeProps>(
         ></path>
       </svg>
     );
-  }
+  },
 );
 
 export { Breadcrumb, BreadcrumbSeparator, BreadcrumbItem, BreadcrumbHome };

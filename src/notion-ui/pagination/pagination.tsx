@@ -87,7 +87,7 @@ const Pagination: React.FC<PaginationProps> = ({ lastPage, onPageChange }) => {
           <span key={index} className="px-4 py-2 text-primary">
             ...
           </span>
-        )
+        ),
       )}
 
       {/* Next Button */}
@@ -106,4 +106,4 @@ const Pagination: React.FC<PaginationProps> = ({ lastPage, onPageChange }) => {
   );
 };
 
-export default Pagination;
+export { Pagination };

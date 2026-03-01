@@ -1,6 +1,5 @@
+import { FilterItem, SearchInput } from "@/components/notion-ui/search-input";
 import type { Meta, StoryObj } from "@storybook/react";
-import SearchInput from "./index";
-import { FilterItem } from "@/components/notion-ui/search-input/search-input";
 
 const meta: Meta<typeof SearchInput> = {
   title: "Form/SearchInput",
@@ -20,7 +19,7 @@ const fruitFilters: FilterItem[] = [
 const mockFetch = async (
   value: string,
   filters?: Record<string, boolean>,
-  maxFetch?: number
+  maxFetch?: number,
 ) => {
   const data = [
     { id: "1", name: "Apple" },
@@ -32,7 +31,7 @@ const mockFetch = async (
   ];
   await new Promise((res) => setTimeout(res, 500));
   return data.filter((item) =>
-    item.name.toLowerCase().includes(value.toLowerCase())
+    item.name.toLowerCase().includes(value.toLowerCase()),
   );
 };
 

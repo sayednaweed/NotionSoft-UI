@@ -1,4 +1,4 @@
-import ShiningText from "./shining-text";
+import { ShiningText } from "./shining-text";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

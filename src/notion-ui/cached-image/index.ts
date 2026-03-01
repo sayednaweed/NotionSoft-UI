@@ -1,3 +1,3 @@
-import CachedImage from "./cached-image";
+import { ImageProps, CachedImage } from "./cached-image";
 
-export default CachedImage;
+export { CachedImage, type ImageProps };

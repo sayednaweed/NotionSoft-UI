@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CalendarDays } from "lucide-react";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
-import AnimatedItem from "../animated-item";
 import type { Calendar, Locale } from "react-date-object";
 import type DateObject from "react-date-object";
 import { Calendar as Calendars } from "react-multi-date-picker";
 import gregorian from "react-date-object/calendars/gregorian";
 import gregorian_en from "react-date-object/locales/gregorian_en";
 import { cn } from "../../utils/cn";
+import { AnimatedItem } from "@/components/notion-ui/animated-item";
 
-export type MultiDatePickerSize = "sm" | "md" | "lg";
+type MultiDatePickerSize = "sm" | "md" | "lg";
 
 interface MultiDatePickerText {
   label?: string;
@@ -17,7 +17,7 @@ interface MultiDatePickerText {
   placeholder?: string;
   to?: string;
 }
-export interface MultiDatePickerProps {
+interface MultiDatePickerProps {
   dateOnComplete: (selectedDates: DateObject[]) => void;
   value: DateObject[];
   className?: string;
@@ -37,7 +37,7 @@ export interface MultiDatePickerProps {
   };
 }
 
-export default function MultiDatePicker(props: MultiDatePickerProps) {
+function MultiDatePicker(props: MultiDatePickerProps) {
   const {
     dateOnComplete,
     value,
@@ -97,29 +97,29 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
             required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
           }
         : measurement == "md"
-        ? {
-            height: "44px",
-            paddingBottom: "pb-[2px]",
-            endContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
-              : "top-[22px] -translate-y-1/2",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          }
-        : {
-            height: "40px",
-            paddingBottom: "pb-[2px]",
-            endContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
-            startContent: label
-              ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
-              : "top-[20px] -translate-y-1/2",
-            required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
-          },
-    [measurement, label]
+          ? {
+              height: "44px",
+              paddingBottom: "pb-[2px]",
+              endContent: label
+                ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
+                : "top-[22px] -translate-y-1/2",
+              startContent: label
+                ? "ltr:top-[45px] rtl:top-[51px] -translate-y-1/2"
+                : "top-[22px] -translate-y-1/2",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            }
+          : {
+              height: "40px",
+              paddingBottom: "pb-[2px]",
+              endContent: label
+                ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
+                : "top-[20px] -translate-y-1/2",
+              startContent: label
+                ? "ltr:top-[44px] rtl:top-[50px] -translate-y-1/2"
+                : "top-[20px] -translate-y-1/2",
+              required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
+            },
+    [measurement, label],
   );
   const readOnlyStyle = readOnly && "opacity-40";
   const localizations = getLocalizations
@@ -134,7 +134,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
       className={cn(
         rootDivClassName,
         "relative flex w-full flex-col justify-end",
-        readOnlyStyle
+        readOnlyStyle,
       )}
     >
       {visible && (
@@ -155,7 +155,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
         <span
           className={cn(
             "absolute flex items-center ltr:left-3 rtl:right-3",
-            heightStyle.startContent
+            heightStyle.startContent,
           )}
         >
           {startContent}
@@ -167,7 +167,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
         <span
           className={cn(
             "absolute flex items-center ltr:right-[5px] rtl:left-[5px]",
-            heightStyle.endContent
+            heightStyle.endContent,
           )}
         >
           {endContent}
@@ -179,7 +179,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
         <span
           className={cn(
             "absolute font-semibold text-red-600 rtl:text-[13px] ltr:text-[11px] ltr:right-2.5 rtl:left-2.5",
-            heightStyle.required
+            heightStyle.required,
           )}
         >
           {requiredHint}
@@ -191,7 +191,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
         <label
           htmlFor={label}
           className={cn(
-            "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1"
+            "font-semibold ltr:text-[13px] rtl:text-[18px] inline-block pb-1",
           )}
         >
           {label}
@@ -203,7 +203,7 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
         }}
         className={cn(
           "relative flex items-center text-start px-3 border select-none rounded-sm rtl:text-[17px] ltr:text-[13px]",
-          className
+          className,
         )}
         onClick={onVisibilityChange}
       >
@@ -258,3 +258,4 @@ export default function MultiDatePicker(props: MultiDatePickerProps) {
     </div>
   );
 }
+export { MultiDatePickerSize, MultiDatePickerProps, MultiDatePicker };

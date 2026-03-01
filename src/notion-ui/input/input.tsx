@@ -205,4 +205,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   },
 );
 
-export { Input, NastranInputSize, InputProps };
+export { Input, type NastranInputSize, type InputProps };

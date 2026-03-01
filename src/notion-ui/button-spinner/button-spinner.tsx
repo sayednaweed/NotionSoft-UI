@@ -20,4 +20,4 @@ function ButtonSpinner(props: IButtonSpinnerProps) {
     </>
   );
 }
-export { ButtonSpinner, IButtonSpinnerProps };
+export { ButtonSpinner, type IButtonSpinnerProps };

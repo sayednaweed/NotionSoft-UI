@@ -9,7 +9,7 @@ import { createPortal } from "react-dom";
 import { Check, Eraser, List, ListFilter, LoaderCircle, X } from "lucide-react";
 import { useDebounce } from "@/utils/hook";
 import { cn } from "@/utils/cn";
-import { Input, NastranInputSize } from "@/components/notion-ui/input";
+import { Input, type NastranInputSize } from "@/components/notion-ui/input";
 import { buildNestedFiltersQuery } from "@/utils/helper";
 
 interface FilterItem {
@@ -654,4 +654,4 @@ const Dropdown = <T,>(
     document.body,
   );
 
-export { MultiSelectInputForward, FilterItem, MultiSelectInputProps };
+export { MultiSelectInputForward, type FilterItem, type MultiSelectInputProps };

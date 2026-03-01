@@ -70,4 +70,4 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   },
 );
 
-export { Checkbox, CheckboxProps };
+export { Checkbox, type CheckboxProps };

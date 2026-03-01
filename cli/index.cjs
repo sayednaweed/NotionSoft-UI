@@ -7,19 +7,6 @@ const chalk = require("chalk");
 const { execSync } = require("child_process");
 
 /* ------------------------------
-   Helper: get template path
-------------------------------- */
-function getTemplateFile(component) {
-  // Library template: src/notion-ui/button/button.tsx
-  return path.join(
-    __dirname,
-    "../src/notion-ui",
-    component,
-    component + ".tsx"
-  );
-}
-
-/* ------------------------------
    Install dependencies in project
 ------------------------------- */
 function installDependencies() {
@@ -41,7 +28,7 @@ function updateTsConfig() {
 
   if (!fs.existsSync(tsconfigPath)) {
     console.log(
-      chalk.yellow("⚠ tsconfig.json not found, skipping baseUrl setup.")
+      chalk.yellow("⚠ tsconfig.json not found, skipping baseUrl setup."),
     );
     return;
   }
@@ -56,8 +43,8 @@ function updateTsConfig() {
   fs.writeJsonSync(tsconfigPath, tsconfig, { spaces: 2 });
   console.log(
     chalk.green(
-      "✓ tsconfig.json updated for absolute imports (@utils/*, @components/*)"
-    )
+      "✓ tsconfig.json updated for absolute imports (@utils/*, @components/*)",
+    ),
   );
 }
 
@@ -79,7 +66,7 @@ program
     // Create config
     fs.writeFileSync(
       configPath,
-      JSON.stringify({ componentDir: "src/components/notion-ui" }, null, 2)
+      JSON.stringify({ componentDir: "src/components/notion-ui" }, null, 2),
     );
 
     // Ensure component folder
@@ -99,7 +86,7 @@ import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: Parameters<typeof clsx>) {
   return twMerge(clsx(...inputs));
-}`
+}`,
       );
       console.log(chalk.green("✓ cn helper created at src/utils/cn.ts"));
     }
@@ -130,6 +117,7 @@ program
 
     const config = fs.readJSONSync(configFile);
     const templateDir = path.join(__dirname, "../src/notion-ui", component);
+    fs.ensureDirSync(path.join(cwd, "src/utils"));
 
     if (!fs.existsSync(templateDir)) {
       console.log(chalk.red(`❌ Component '${component}' does not exist.`));
@@ -170,33 +158,31 @@ program
         console.log(chalk.green(`✓ ${dataFile} merged to src/utils/dt.ts`));
       });
 
-    // Handle use-*.ts → src/utils/hook.ts
-    fs.readdirSync(templateDir)
-      .filter((f) => f.startsWith("use-") && f.endsWith(".ts"))
-      .forEach((hookFile) => {
-        const srcHookFile = path.join(templateDir, hookFile);
-        const destHookFile = path.join(cwd, "src/utils/hook.ts");
-        appendIfNotExist(srcHookFile, destHookFile);
-        console.log(chalk.green(`✓ ${hookFile} merged to src/utils/hook.ts`));
-      });
-
-    // Handle utils.ts → src/utils/helper.ts
-    const utilsFile = path.join(templateDir, "utils.ts");
-    if (fs.existsSync(utilsFile)) {
-      const destUtilsFile = path.join(cwd, "src/utils/helper.ts");
-      appendIfNotExist(utilsFile, destUtilsFile);
-      console.log(chalk.green("✓ utils.ts merged to src/utils/helper.ts"));
+    // Handle hook.ts → src/utils/hook.ts
+    const hookFile = path.join(templateDir, "hook.ts");
+    if (fs.existsSync(hookFile)) {
+      const destHookFile = path.join(cwd, "src/utils/hook.ts");
+      appendIfNotExist(hookFile, destHookFile);
+      console.log(chalk.green("✓ hook.ts merged to src/utils/hook.ts"));
     }
 
-    // Copy remaining files (exclude index.ts, *.stories.tsx, type.ts, *-data.ts, use-*.ts, utils.ts)
+    // Handle helper.ts → src/utils/helper.ts
+    const helperFile = path.join(templateDir, "helper.ts");
+    if (fs.existsSync(helperFile)) {
+      const destHelperFile = path.join(cwd, "src/utils/helper.ts");
+      appendIfNotExist(helperFile, destHelperFile);
+      console.log(chalk.green("✓ helper.ts merged to src/utils/helper.ts"));
+    }
+
+    // Copy remaining files (exclude index.ts, *.stories.tsx, type.ts, *-data.ts, hook.ts, helper.ts)
     fs.readdirSync(templateDir).forEach((file) => {
       if (
         file === "index.ts" ||
         file === "type.ts" ||
         file.endsWith("-data.ts") ||
         file.endsWith(".stories.tsx") ||
-        (file.startsWith("use-") && file.endsWith(".ts")) ||
-        file === "utils.ts"
+        file === "hook.ts" ||
+        file === "helper.ts"
       )
         return;
 
@@ -207,7 +193,7 @@ program
     });
 
     console.log(
-      chalk.green(`✓ Installed ${component} to ${config.componentDir}`)
+      chalk.green(`✓ Installed ${component} to ${config.componentDir}`),
     );
   });
 

@@ -3,7 +3,7 @@ import { DateObject } from "react-multi-date-picker";
 
 import { cn } from "@/utils/cn";
 import { MultiDatePicker } from "@/components/notion-ui/multi-date-picker";
-import { MultiDatePickerProps } from "@/components/notion-ui/multi-date-picker";
+import { type MultiDatePickerProps } from "@/components/notion-ui/multi-date-picker";
 import {
   Card,
   CardContent,
@@ -195,7 +195,7 @@ const FilterItem = (props: FilterItemProps) => {
 export {
   FilterDialog,
   FilterItem,
-  FilterDialogProps,
-  IShowData,
-  FilterItemProps,
+  type FilterDialogProps,
+  type IShowData,
+  type FilterItemProps,
 };

@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { cn } from "../../utils/cn";
 import DOMPurify from "dompurify";
 import { Shimmer } from "@/components/notion-ui/shimmer";
+import { cn } from "@/utils/cn";
 
 /* ---------------------------------- */
 /* Types */

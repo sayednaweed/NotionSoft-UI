@@ -270,4 +270,4 @@ function DatePicker(props: DatePickerProps) {
   );
 }
 
-export { DatePickerProps, DatePickerSize, DatePicker };
+export { type DatePickerProps, type DatePickerSize, DatePicker };

@@ -46,4 +46,4 @@ function ShimmerItem(props: ShimmerItemProps) {
   const { className } = props;
   return <div className={cn(`h-10 bg-primary/5`, className)} />;
 }
-export { Shimmer, ShimmerProps, ShimmerItem, ShimmerItemProps };
+export { Shimmer, type ShimmerProps, ShimmerItem, type ShimmerItemProps };

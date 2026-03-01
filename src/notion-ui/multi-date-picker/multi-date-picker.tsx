@@ -6,7 +6,7 @@ import type DateObject from "react-date-object";
 import { Calendar as Calendars } from "react-multi-date-picker";
 import gregorian from "react-date-object/calendars/gregorian";
 import gregorian_en from "react-date-object/locales/gregorian_en";
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 import { AnimatedItem } from "@/components/notion-ui/animated-item";
 
 type MultiDatePickerSize = "sm" | "md" | "lg";
@@ -258,4 +258,4 @@ function MultiDatePicker(props: MultiDatePickerProps) {
     </div>
   );
 }
-export { MultiDatePickerSize, MultiDatePickerProps, MultiDatePicker };
+export { type MultiDatePickerSize, type MultiDatePickerProps, MultiDatePicker };

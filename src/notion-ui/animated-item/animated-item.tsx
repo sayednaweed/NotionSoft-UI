@@ -53,4 +53,4 @@ function AnimatedItem(props: AnimatedItemProps) {
   );
 }
 
-export { AnimatedItem, AnimatedItemProps };
+export { AnimatedItem, type AnimatedItemProps };

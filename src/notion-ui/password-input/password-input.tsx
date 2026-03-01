@@ -1,4 +1,4 @@
-import { Input, InputProps } from "@/components/notion-ui/input";
+import { Input, type InputProps } from "@/components/notion-ui/input";
 import { checkStrength, passwordStrengthScore } from "@/utils/helper";
 import { Check, X } from "lucide-react";
 import React, { useMemo, useState } from "react";

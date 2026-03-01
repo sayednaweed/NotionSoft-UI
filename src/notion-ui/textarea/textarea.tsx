@@ -115,4 +115,4 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   },
 );
 
-export { Textarea, TextareaProps };
+export { Textarea, type TextareaProps };

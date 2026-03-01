@@ -1,7 +1,3 @@
-import { defaultCountries } from "./country-data";
-import { LazyFlag } from "./lazy-flag";
-import type { ParsedCountry } from "./type";
-import { cn } from "../../utils/cn";
 import React, {
   useState,
   useRef,
@@ -11,6 +7,10 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { AnimatedItem } from "@/components/notion-ui/animated-item";
+import { cn } from "@/utils/cn";
+import { LazyFlag } from "@/components/notion-ui/phone-input/lazy-flag";
+import { defaultCountries } from "@/data/data";
+import { ParsedCountry } from "@/type/type";
 
 interface VirtualListProps {
   items: ParsedCountry[];

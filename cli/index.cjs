@@ -140,22 +140,31 @@ program
       }
     };
 
-    // Handle type.ts → src/utils/type.ts
+    // Handle type.ts → src/types/type.ts
     const typeFile = path.join(templateDir, "type.ts");
     if (fs.existsSync(typeFile)) {
-      const destTypeFile = path.join(cwd, "src/utils/type.ts");
+      const typesDir = path.join(cwd, "src/types");
+      fs.ensureDirSync(typesDir);
+
+      const destTypeFile = path.join(typesDir, "type.ts");
       appendIfNotExist(typeFile, destTypeFile);
-      console.log(chalk.green("✓ type.ts merged to src/utils/type.ts"));
+
+      console.log(chalk.green("✓ type.ts merged to src/types/type.ts"));
     }
 
-    // Handle *-data.ts → src/utils/dt.ts
+    // Handle *-data.ts → src/data/data.ts
     fs.readdirSync(templateDir)
       .filter((f) => f.endsWith("-data.ts"))
       .forEach((dataFile) => {
+        const dataDir = path.join(cwd, "src/data");
+        fs.ensureDirSync(dataDir);
+
         const srcDataFile = path.join(templateDir, dataFile);
-        const destDataFile = path.join(cwd, "src/utils/dt.ts");
+        const destDataFile = path.join(dataDir, "data.ts");
+
         appendIfNotExist(srcDataFile, destDataFile);
-        console.log(chalk.green(`✓ ${dataFile} merged to src/utils/dt.ts`));
+
+        console.log(chalk.green(`✓ ${dataFile} merged to src/data/data.ts`));
       });
 
     // Handle hook.ts → src/utils/hook.ts

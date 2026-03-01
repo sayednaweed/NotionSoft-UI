@@ -192,4 +192,4 @@ const MultiTabTextarea = React.forwardRef<
   );
 });
 
-export { MultiTabTextarea, MultiTabTextareaProps };
+export { MultiTabTextarea, type MultiTabTextareaProps };

@@ -198,4 +198,4 @@ const MultiTabInput = React.forwardRef<HTMLInputElement, MultiTabInputProps>(
   },
 );
 
-export { MultiTabInput, MultiTabInputProps };
+export { MultiTabInput, type MultiTabInputProps };

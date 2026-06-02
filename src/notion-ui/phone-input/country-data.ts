@@ -1,4 +1,4 @@
-import type { ParsedCountry } from "./type";
+import type { ParsedCountry } from "@/types/type";
 
 export const defaultCountries: ParsedCountry[] = [
   { name: "Afghanistan", iso2: "af", dialCode: "93" },

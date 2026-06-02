@@ -1,10 +1,9 @@
-// Breadcrumb.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   Breadcrumb,
+  BreadcrumbHome,
   BreadcrumbItem,
   BreadcrumbSeparator,
-  BreadcrumbHome,
 } from "./breadcrumb";
 
 const meta: Meta<typeof Breadcrumb> = {
@@ -19,9 +18,6 @@ export default meta;
 
 type Story = StoryObj<typeof Breadcrumb>;
 
-/**
- * Basic breadcrumb with text items
- */
 export const Basic: Story = {
   render: () => (
     <Breadcrumb>
@@ -29,14 +25,11 @@ export const Basic: Story = {
       <BreadcrumbSeparator />
       <BreadcrumbItem>projects</BreadcrumbItem>
       <BreadcrumbSeparator />
-      <BreadcrumbItem>storybook</BreadcrumbItem>
+      <BreadcrumbItem active>storybook</BreadcrumbItem>
     </Breadcrumb>
   ),
 };
 
-/**
- * Breadcrumb with home icon
- */
 export const WithHomeIcon: Story = {
   render: () => (
     <Breadcrumb>
@@ -44,14 +37,11 @@ export const WithHomeIcon: Story = {
       <BreadcrumbSeparator />
       <BreadcrumbItem>dashboard</BreadcrumbItem>
       <BreadcrumbSeparator />
-      <BreadcrumbItem>settings</BreadcrumbItem>
+      <BreadcrumbItem active>settings</BreadcrumbItem>
     </Breadcrumb>
   ),
 };
 
-/**
- * Long breadcrumb path to demonstrate horizontal scrolling
- */
 export const LongPath: Story = {
   render: () => (
     <Breadcrumb className="max-w-xs">
@@ -65,22 +55,37 @@ export const LongPath: Story = {
       <BreadcrumbSeparator />
       <BreadcrumbItem>components</BreadcrumbItem>
       <BreadcrumbSeparator />
-      <BreadcrumbItem>breadcrumb</BreadcrumbItem>
+      <BreadcrumbItem active>breadcrumb</BreadcrumbItem>
     </Breadcrumb>
   ),
 };
 
-/**
- * Custom styled breadcrumb
- */
+export const ActiveItem: Story = {
+  render: () => (
+    <Breadcrumb>
+      <BreadcrumbHome />
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>patients</BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>medical records</BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem active>details</BreadcrumbItem>
+    </Breadcrumb>
+  ),
+};
+
 export const CustomStyled: Story = {
   render: () => (
-    <Breadcrumb className="bg-muted border-dashed">
-      <BreadcrumbHome className="text-primary" />
-      <BreadcrumbSeparator className="text-primary/30" />
-      <BreadcrumbItem className="text-primary">home</BreadcrumbItem>
+    <Breadcrumb className="border-brand-200 bg-brand-50/70 dark:border-brand-500/20 dark:bg-brand-500/10">
+      <BreadcrumbHome className="hover:text-brand-600 hover:fill-brand-600 dark:hover:text-brand-300 dark:hover:fill-brand-300" />
+      <BreadcrumbSeparator className="text-brand-200 dark:text-brand-500/30" />
+      <BreadcrumbItem className="text-brand-600 dark:text-brand-300">
+        home
+      </BreadcrumbItem>
       <BreadcrumbSeparator />
-      <BreadcrumbItem className="font-semibold">profile</BreadcrumbItem>
+      <BreadcrumbItem active className="font-semibold">
+        profile
+      </BreadcrumbItem>
     </Breadcrumb>
   ),
 };

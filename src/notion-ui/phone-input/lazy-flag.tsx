@@ -1,5 +1,5 @@
-import { getFlagCodepoint } from "./utils";
 import { useEffect, useRef, useState } from "react";
+import { getFlagCodepoint } from "@/utils/helper";
 
 export const LazyFlag: React.FC<{
   iso2: string;

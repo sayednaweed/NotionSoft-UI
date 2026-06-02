@@ -1,163 +1,249 @@
-import { useState } from "react";
-import { Meta, StoryFn } from "@storybook/react";
-import {
-  MultiSelectInputForward,
-  MultiSelectInputProps,
-} from "@/components/notion-ui/multi-select-input";
+import { MultiSelectInput } from "@/components/notion-ui/multi-select-input";
+import type { Meta, StoryObj } from "@storybook/react";
 
-interface User {
-  uuid: string;
+type User = {
+  id: number;
   name: string;
   email: string;
+  role: string;
   active: boolean;
-  admin: boolean;
-}
+};
 
-export default {
-  title: "Select/MultiSelectInput",
-  component: MultiSelectInputForward,
-} as Meta<typeof MultiSelectInputForward>;
-
-// ------------------ Mock data ------------------
-const mockUsers: User[] = [
+const users: User[] = [
   {
-    uuid: "1",
-    name: "Alice",
-    email: "alice@example.com",
+    id: 1,
+    name: "Ahmad Wali",
+    email: "ahmad@example.com",
+    role: "Engineer",
     active: true,
-    admin: false,
   },
   {
-    uuid: "2",
-    name: "Bob",
-    email: "bob@example.com",
-    active: false,
-    admin: true,
-  },
-  {
-    uuid: "3",
-    name: "Charlie",
-    email: "charlie@example.com",
+    id: 2,
+    name: "Mina Rahimi",
+    email: "mina@example.com",
+    role: "Designer",
     active: true,
-    admin: true,
   },
   {
-    uuid: "4",
-    name: "David",
-    email: "david@example.com",
+    id: 3,
+    name: "Farid Popal",
+    email: "farid@example.com",
+    role: "Manager",
     active: false,
-    admin: false,
+  },
+  {
+    id: 4,
+    name: "Laila Noori",
+    email: "laila@example.com",
+    role: "QA",
+    active: true,
   },
 ];
 
-// ------------------ Mock async fetch function ------------------
 const fetchUsers = async (
-  query: string,
+  searchValue: string,
   filters?: Record<string, boolean>,
-  maxFetch?: number,
-) => {
-  let result = mockUsers;
+  maxFetch = 30,
+): Promise<User[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
-  if (filters) {
-    result = result.filter((user) =>
-      Object.entries(filters).every(([key, value]) =>
-        value ? (user as any)[key] : true,
-      ),
-    );
-  }
+  const query = searchValue.toLowerCase();
 
-  if (query) {
-    const q = query.toLowerCase();
-    result = result.filter(
-      (u) =>
-        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
-    );
-  }
+  return users
+    .filter((user) => {
+      const matchesSearch =
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        user.role.toLowerCase().includes(query);
 
-  if (maxFetch) result = result.slice(0, maxFetch);
+      const matchesActive = !filters?.active || user.active;
+      const matchesEngineer = !filters?.engineer || user.role === "Engineer";
 
-  await new Promise((r) => setTimeout(r, 300));
-
-  return result;
+      return matchesSearch && matchesActive && matchesEngineer;
+    })
+    .slice(0, maxFetch);
 };
 
-// ------------------ Template ------------------
-const Template: StoryFn<MultiSelectInputProps<User>> = (args) => {
-  const [selected, setSelected] = useState<User[]>([]);
+const text = {
+  label: "Users",
+  required: "Required",
+  notItem: "No users found",
+  maxRecord: "Max records",
+  clearFilters: "Clear filters",
+};
 
-  return (
-    <div style={{ width: 400, padding: 20 }}>
-      <MultiSelectInputForward
-        {...args}
-        selected={selected}
-        onItemsSelect={(selectedItems) => {
-          if (Array.isArray(selectedItems)) setSelected(selectedItems);
-          else if (selectedItems) setSelected([selectedItems]);
-          else setSelected([]);
+const meta: Meta<typeof MultiSelectInput<User>> = {
+  title: "Notion UI/MultiSelectInput",
+  component: MultiSelectInput,
+  tags: ["autodocs"],
+  argTypes: {
+    placeholder: {
+      control: "text",
+    },
+    selectionMode: {
+      control: "select",
+      options: ["single", "multiple"],
+    },
+    readOnly: {
+      control: "boolean",
+    },
+    showMaxFetch: {
+      control: "boolean",
+    },
+    debounceValue: {
+      control: "number",
+    },
+  },
+  args: {
+    placeholder: "Search users...",
+    selectionMode: "multiple",
+    itemKey: "id",
+    searchBy: ["name", "email"],
+    fetch: fetchUsers,
+    showMaxFetch: true,
+    debounceValue: 300,
+    readOnly: false,
+    text,
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<typeof MultiSelectInput<User>>;
+
+export const Default: Story = {};
+
+export const SingleSelect: Story = {
+  args: {
+    selectionMode: "single",
+    placeholder: "Select one user...",
+  },
+};
+
+export const MultipleSelect: Story = {
+  args: {
+    selectionMode: "multiple",
+    placeholder: "Select users...",
+  },
+};
+
+export const WithFixedOptions: Story = {
+  args: {
+    fetch: fetchUsers,
+    fixedOptions: users,
+    placeholder: "Select from fixed users...",
+    showMaxFetch: false,
+  },
+};
+
+export const WithSelectedItems: Story = {
+  args: {
+    selected: [users[0], users[1]],
+  },
+};
+
+export const ErrorState: Story = {
+  args: {
+    errorMessage: "Please select at least one user.",
+  },
+};
+
+export const ReadOnly: Story = {
+  args: {
+    readOnly: true,
+    selected: [users[0]],
+    fetch: fetchUsers,
+  },
+};
+
+export const CustomRenderItem: Story = {
+  args: {
+    renderItem: (user, selected) => (
+      <div
+        style={{
+          padding: "8px 12px",
+          background: selected ? "#f1f5f9" : "transparent",
+          cursor: "pointer",
+        }}
+      >
+        <strong>{user.name}</strong>
+        <div style={{ fontSize: 12, opacity: 0.7 }}>
+          {user.email} · {user.role}
+        </div>
+      </div>
+    ),
+  },
+};
+
+export const WithFilters: Story = {
+  args: {
+    filters: [
+      {
+        key: "active",
+        name: "Active users",
+      },
+      {
+        key: "engineer",
+        name: "Engineers",
+      },
+    ],
+  },
+};
+
+export const AllExamples: Story = {
+  render: () => (
+    <div style={{ display: "grid", gap: 24, maxWidth: 420 }}>
+      <MultiSelectInput<User>
+        placeholder="Multiple select..."
+        selectionMode="multiple"
+        itemKey="id"
+        searchBy={["name", "email"]}
+        fetch={fetchUsers}
+        text={{
+          ...text,
+          label: "Multiple select",
         }}
       />
-      <div style={{ marginTop: 20 }}>
-        <strong>Selected Users:</strong>
-        <pre>{JSON.stringify(selected, null, 2)}</pre>
-      </div>
+
+      <MultiSelectInput<User>
+        placeholder="Single select..."
+        selectionMode="single"
+        itemKey="id"
+        searchBy={["name", "email"]}
+        fetch={fetchUsers}
+        text={{
+          ...text,
+          label: "Single select",
+        }}
+      />
+
+      <MultiSelectInput<User>
+        placeholder="Fixed options..."
+        selectionMode="multiple"
+        itemKey="id"
+        searchBy={["name", "email"]}
+        fetch={fetchUsers}
+        fixedOptions={users}
+        text={{
+          ...text,
+          label: "Fixed options",
+        }}
+      />
+
+      <MultiSelectInput<User>
+        placeholder="Read only..."
+        selectionMode="multiple"
+        itemKey="id"
+        searchBy={["name", "email"]}
+        fetch={fetchUsers}
+        fixedOptions={users}
+        selected={[users[0]]}
+        readOnly
+        text={{
+          ...text,
+          label: "Read only",
+        }}
+      />
     </div>
-  );
-};
-
-// ------------------ Stories ------------------
-
-// Multiple selection story
-export const MultipleSelection = Template.bind({});
-MultipleSelection.args = {
-  fetch: fetchUsers,
-  selectionMode: "multiple",
-  searchBy: ["name", "email"],
-  itemKey: "uuid",
-  filters: [
-    { key: "active", name: "Active" },
-    { key: "admin", name: "Admin" },
-  ],
-  text: {
-    notItem: "No users found",
-    maxRecord: "Max results",
-    clearFilters: "Clear Filters",
-  },
-};
-
-// Single selection story
-export const SingleSelection = Template.bind({});
-SingleSelection.args = {
-  fetch: fetchUsers,
-  selectionMode: "single",
-  searchBy: ["name", "email"],
-  itemKey: "uuid",
-  filters: [
-    { key: "active", name: "Active" },
-    { key: "admin", name: "Admin" },
-  ],
-  text: {
-    notItem: "No users found",
-    maxRecord: "Max results",
-    clearFilters: "Clear Filters",
-  },
-};
-
-// ------------------ API Config story ------------------
-export const APIConfigExample = Template.bind({});
-APIConfigExample.args = {
-  apiConfig: {
-    url: "https://jsonplaceholder.typicode.com/users",
-    headers: { "Content-Type": "application/json" },
-  },
-  selectionMode: "multiple",
-  searchBy: ["name", "email"],
-  filters: [
-    { key: "active", name: "Active" },
-    { key: "admin", name: "Admin" },
-  ],
-  text: {
-    notItem: "No users found",
-    maxRecord: "Max results",
-    clearFilters: "Clear Filters",
-  },
+  ),
 };

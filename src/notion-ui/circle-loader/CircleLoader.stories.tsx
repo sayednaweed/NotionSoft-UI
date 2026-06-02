@@ -1,21 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { CircleLoader, type CircleLoaderProps } from "./circle-loader";
+import { CircleLoader } from "./circle-loader";
 
 const meta: Meta<typeof CircleLoader> = {
-  title: "Loader/CircleLoader",
+  title: "Feedback/CircleLoader",
   component: CircleLoader,
   tags: ["autodocs"],
   argTypes: {
-    label: { control: "text" },
-    className: { control: "text" },
-    labelclassname: { control: "text" },
-    parentClassName: { control: "text" },
+    label: {
+      control: "text",
+    },
+    className: {
+      control: false,
+    },
+    classNames: {
+      control: false,
+    },
   },
   args: {
-    label: "Loading...",
-  },
-  parameters: {
-    layout: "centered",
+    label: "Loading",
   },
 };
 
@@ -31,39 +33,24 @@ export const WithCustomLabel: Story = {
   },
 };
 
-export const BiggerSpinner: Story = {
+export const WithoutLabel: Story = {
   args: {
-    // Tailwind classes to control svg size (component default is w-8 h-8)
-    className: "w-12 h-12",
-    label: "Please wait",
+    label: "",
   },
 };
 
-export const MutedLabel: Story = {
+export const LargeLoader: Story = {
   args: {
-    label: "Loading",
-    labelclassname: "opacity-60 font-normal",
+    classNames: {
+      circleClassName: "h-12 w-12",
+    },
+    label: "Processing",
   },
 };
 
-export const InContainer: Story = {
-  render: (args: CircleLoaderProps) => (
-    <div className="w-[320px] h-[180px] border rounded-md flex items-center justify-center">
-      <CircleLoader {...args} />
-    </div>
-  ),
-  args: {
-    label: "Loading inside a box",
-  },
-};
-
-export const AlignStart: Story = {
-  args: {
-    parentClassName: "items-start justify-start",
-    label: "Top-left alignment",
-  },
-  render: (args: CircleLoaderProps) => (
-    <div className="w-[320px] h-[180px] border rounded-md p-4">
+export const DarkBackground: Story = {
+  render: (args) => (
+    <div className="bg-slate-900 p-8">
       <CircleLoader {...args} />
     </div>
   ),

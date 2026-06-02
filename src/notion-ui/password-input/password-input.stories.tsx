@@ -1,7 +1,4 @@
-import {
-  PasswordInput,
-  PasswordInputProps,
-} from "@/components/notion-ui/password-input";
+import { PasswordInput, type PasswordInputProps } from "./password-input";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<PasswordInputProps> = {

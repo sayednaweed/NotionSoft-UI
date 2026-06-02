@@ -19,7 +19,7 @@ interface PasswordInputProps extends InputProps {
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, ref) => {
     const { classNames, value, text, onChange, ...rest } = props;
-    const { rootDivClassName } = classNames || {};
+    const { root } = classNames || {};
 
     // Internal state only if parent does NOT control value
     const [password, setPassword] = useState(value ?? "");
@@ -64,7 +64,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
     };
 
     return (
-      <div className={`w-full ${rootDivClassName ?? ""}`}>
+      <div className={`w-full ${root ?? ""}`}>
         <Input
           value={currentPassword}
           ref={ref}
@@ -125,4 +125,4 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   },
 );
 
-export { PasswordInput, PasswordInputProps, PasswordInputText };
+export { PasswordInput, type PasswordInputProps, type PasswordInputText };

@@ -1,5 +1,6 @@
 import { Shimmer } from "@/components/notion-ui/shimmer";
 import { cn } from "@/utils/cn";
+import { Aperture } from "lucide-react";
 import React, { useEffect, useState, forwardRef, useRef } from "react";
 
 /* ---------------------------------- */
@@ -114,18 +115,12 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         return;
       }
 
-      /* ---------------------------------- */
-      /* Cross-origin → use <img src> */
-      /* ---------------------------------- */
       if (isCrossOrigin(resolvedSrc)) {
         setImageUrl(resolvedSrc);
         setLoading(false);
         return;
       }
 
-      /* ---------------------------------- */
-      /* Cache Storage */
-      /* ---------------------------------- */
       const cached = await getCachedImage(resolvedSrc);
       if (cached) {
         if (!signal.aborted) {
@@ -135,15 +130,13 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         return;
       }
 
-      /* ---------------------------------- */
-      /* Fetch */
-      /* ---------------------------------- */
       const response = fetchRef.current
         ? await fetchRef.current(resolvedSrc)
         : await window.fetch(resolvedSrc, {
             headers: apiConfig?.headers,
             signal,
           });
+
       if (signal.aborted) return;
 
       const contentType = response.headers.get("content-type") ?? "";
@@ -180,17 +173,13 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
     };
   }, [src, apiConfig?.src]);
 
-  /* ---------------------------------- */
-  /* UI */
-  /* ---------------------------------- */
-
   if (loading || !imageUrl) {
     const stop = !loading && !imageUrl;
 
     return (
       <Shimmer
         className={cn(
-          "bg-primary/10 mx-auto flex p-2 items-center size-8 rounded border border-tertiary/10",
+          "mx-auto flex size-8 items-center rounded-xl border border-slate-200/80 p-2 dark:border-white/10",
           shimmerClassName,
         )}
         stop={stop}
@@ -204,13 +193,24 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
           strokeLinecap="round"
           strokeLinejoin="round"
           className={cn(
-            "stroke-primary/40 mx-auto stroke-2",
+            "mx-auto stroke-2 text-brand-400 dark:text-brand-300",
             shimmerIconClassName,
           )}
         >
-          <rect x="1" y="1" width="22" height="22" rx="2" ry="2" />
-          <polyline points="3,20 8,13 13,17 17,12 21,16" />
-          <circle cx="16" cy="6" r="2" />
+          <rect
+            x="1"
+            y="1"
+            width="22"
+            height="22"
+            rx="2"
+            ry="2"
+            stroke="currentColor"
+          />
+          <polyline
+            points="3,20 8,13 13,17 17,12 21,16"
+            stroke="currentColor"
+          />
+          <circle cx="16" cy="6" r="2" stroke="currentColor" />
         </svg>
       </Shimmer>
     );
@@ -221,7 +221,7 @@ const CachedImage = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
       ref={ref}
       style={{ backgroundImage: `url(${imageUrl})` }}
       className={cn(
-        "cursor-pointer shadow-lg bg-cover bg-center mx-auto",
+        "mx-auto cursor-pointer flex items-center justify-center rounded-2xl bg-cover bg-center shadow-soft ring-1 ring-slate-200/70 dark:ring-white/10",
         className,
       )}
       {...imgProps}

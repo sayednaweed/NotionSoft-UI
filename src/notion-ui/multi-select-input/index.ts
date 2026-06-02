@@ -1,7 +1,7 @@
 import {
   FilterItem,
-  MultiSelectInputForward,
+  MultiSelectInput,
   MultiSelectInputProps,
 } from "./multi-select-input";
 
-export { MultiSelectInputForward, type FilterItem, type MultiSelectInputProps };
+export { MultiSelectInput, type FilterItem, type MultiSelectInputProps };

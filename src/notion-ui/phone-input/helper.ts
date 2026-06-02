@@ -11,7 +11,7 @@ const codepoints: Record<string, string> = alphabet.split("").reduce(
     ...obj,
     [currentLetter]: incrementCodepoint(A_LETTER_CODEPOINT, index),
   }),
-  {}
+  {},
 );
 export const getFlagCodepoint = (iso2: string) => {
   if (!iso2 || iso2.length !== 2) return "";

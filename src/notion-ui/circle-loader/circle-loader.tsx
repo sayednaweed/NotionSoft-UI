@@ -2,29 +2,30 @@ import { cn } from "@/utils/cn";
 
 interface CircleLoaderProps {
   className?: string;
-  labelclassname?: string;
+  classNames?: {
+    labelclassname?: string;
+    circleClassName?: string;
+  };
   label?: string;
-  parentClassName?: string;
 }
 
 function CircleLoader(props: CircleLoaderProps) {
-  const { label, className, labelclassname, parentClassName, ...restProps } =
-    props;
+  const { label, classNames, className, ...restProps } = props;
+  const { labelclassname, circleClassName } = classNames || {};
 
   return (
     <div
-      role="status"
       className={cn(
-        "flex flex-col items-center justify-center",
-        parentClassName,
+        "flex flex-col items-center justify-center gap-2",
+        className,
       )}
+      {...restProps}
     >
       <svg
-        {...restProps}
         aria-hidden="true"
         className={cn(
-          "w-8 h-8 text-primary/40 animate-spin fill-primary",
-          className,
+          "h-8 w-8 animate-spin text-slate-200 fill-brand-500 dark:text-slate-700 dark:fill-brand-300",
+          circleClassName,
         )}
         viewBox="0 0 100 101"
         fill="none"
@@ -39,10 +40,17 @@ function CircleLoader(props: CircleLoaderProps) {
           fill="currentFill"
         />
       </svg>
-      <span className={cn("font-semibold text-sm md:text-md", labelclassname)}>
-        {label ? label : "loading"}
+
+      <span
+        className={cn(
+          "text-sm font-medium text-slate-600 dark:text-slate-300 md:text-base",
+          labelclassname,
+        )}
+      >
+        {label}
       </span>
     </div>
   );
 }
-export { type CircleLoaderProps, CircleLoader };
+
+export { CircleLoaderProps, CircleLoader };

@@ -281,14 +281,14 @@ Sidebar.Footer = SidebarFooter;
 Sidebar.Content = SidebarContent;
 
 export {
-  SidebarProps,
+  type SidebarProps,
   Sidebar,
   Separator,
-  SidebarHeaderProps,
-  SidebarContentProps,
+  type SidebarHeaderProps,
+  type SidebarContentProps,
   SidebarContent,
-  SidebarFooterProps,
+  type SidebarFooterProps,
   SidebarFooter,
   SidebarHeader,
-  SeparatorProps,
+  type SeparatorProps,
 };

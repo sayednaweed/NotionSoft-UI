@@ -1,4 +1,4 @@
-import { PasswordInputText } from "@/components/notion-ui/password-input";
+import { type PasswordInputText } from "@/components/notion-ui/password-input";
 
 export const checkStrength = (pass: string, text: PasswordInputText) => {
   const requirements = [

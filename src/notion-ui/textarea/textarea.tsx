@@ -29,6 +29,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const heightStyle = {
       required: label ? "ltr:top-[4px] rtl:top-[12px]" : "top-[-19px]",
     };
+    const generatedId = React.useId();
+    const inputId = rest.id || generatedId;
     const readOnlyStyle = readOnly && "opacity-40";
 
     return (
@@ -59,7 +61,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {/* Label */}
           {label && (
             <label
-              htmlFor={label}
+              htmlFor={inputId}
               className={cn(
                 "font-semibold rtl:text-md ltr:text-[13px] inline-block pb-1",
               )}

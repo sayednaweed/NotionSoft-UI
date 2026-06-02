@@ -50,4 +50,4 @@ function OptionalTabs({ children }: { children: React.ReactNode }) {
 }
 OptionalTabs.displayName = "OptionalTabs";
 
-export { Tab, TabState, OptionalTabs };
+export { Tab, type TabState, OptionalTabs };

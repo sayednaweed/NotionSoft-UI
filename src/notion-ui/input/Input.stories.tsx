@@ -34,7 +34,6 @@ export const Default: Story = {
   args: {
     label: "Username",
     placeholder: "Enter your username",
-    measurement: "md",
   },
 };
 

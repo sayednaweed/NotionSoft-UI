@@ -4,7 +4,10 @@ import { useLocation } from "react-router";
 
 import { cn } from "@/utils/cn";
 import { AnimatedItem } from "@/components/notion-ui/animated-item";
-import { CachedSvg, CachedSvgProps } from "@/components/notion-ui/cached-svg";
+import {
+  CachedSvg,
+  type CachedSvgProps,
+} from "@/components/notion-ui/cached-svg";
 
 interface SubPermission {
   id: number;
@@ -194,4 +197,9 @@ const SidebarItem = memo(function SidebarItem({
     </>
   );
 }); // Pass custom comparison function
-export { SubPermission, Permission, SidebarItemProps, SidebarItem };
+export {
+  type SubPermission,
+  type Permission,
+  type SidebarItemProps,
+  SidebarItem,
+};

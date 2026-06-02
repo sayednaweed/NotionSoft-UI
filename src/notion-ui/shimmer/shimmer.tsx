@@ -1,4 +1,5 @@
 import { cn } from "@/utils/cn";
+import React from "react";
 
 interface ShimmerProps extends React.HTMLAttributes<HTMLDivElement> {
   stop?: boolean;
@@ -6,44 +7,19 @@ interface ShimmerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Shimmer({ stop = false, className, children }: ShimmerProps) {
   return (
-    <div
-      className={cn("relative w-full overflow-hidden *:rounded-sm", className)}
-    >
-      {/* Scoped CSS */}
-      <style>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -1200px 0;
-          }
-          100% {
-            background-position: 1200px 0;
-          }
-        }
-      `}</style>
-
-      {/* Shimmer overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(
-            to right,
-            var(--from-shimmer) 10%,
-            var(--to-shimmer) 18%,
-            var(--from-shimmer) 25%
-          )`,
-          backgroundSize: "1200px 100%",
-          animation: !stop ? "shimmer 2.2s linear infinite" : "",
-        }}
-      />
-
+    <div className={cn("shimmer-surface w-full *:rounded-sm", className)}>
+      <div className={cn("shimmer-overlay", stop && "shimmer-overlay-stop")} />
       {children}
     </div>
   );
 }
+
 interface ShimmerItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 function ShimmerItem(props: ShimmerItemProps) {
-  const { className } = props;
-  return <div className={cn(`h-10 bg-primary/5`, className)} />;
+  const { className, ...rest } = props;
+
+  return <div className={cn("shimmer-item h-10", className)} {...rest} />;
 }
+
 export { Shimmer, type ShimmerProps, ShimmerItem, type ShimmerItemProps };

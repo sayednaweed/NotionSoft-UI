@@ -654,4 +654,8 @@ const Dropdown = <T,>(
     document.body,
   );
 
-export { MultiSelectInputForward, type FilterItem, type MultiSelectInputProps };
+export {
+  MultiSelectInputForward as MultiSelectInput,
+  type FilterItem,
+  type MultiSelectInputProps,
+};

@@ -1,4 +1,5 @@
 import { cn } from "@/utils/cn";
+import { ChevronRight, LucideProps } from "lucide-react";
 import React from "react";
 
 interface BreadcrumbProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -12,7 +13,7 @@ const Breadcrumb = React.forwardRef<HTMLDivElement, BreadcrumbProps>(
         ref={ref}
         {...rest}
         className={cn(
-          "rounded-sm px-5 items-center border border-primary/15 bg-card w-full sm:w-fit overflow-x-auto flex gap-x-4",
+          "flex w-full items-center gap-x-4 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/85 px-5 py-3 dark:border-white/10 dark:bg-slate-900/60",
           className,
         )}
       >
@@ -22,44 +23,45 @@ const Breadcrumb = React.forwardRef<HTMLDivElement, BreadcrumbProps>(
   },
 );
 
-interface BreadcrumbSeparatorProps extends React.SVGProps<SVGSVGElement> {}
+Breadcrumb.displayName = "Breadcrumb";
+interface BreadcrumbSeparatorProps extends LucideProps {}
 
 const BreadcrumbSeparator = React.forwardRef<
   SVGSVGElement,
   BreadcrumbSeparatorProps
 >((props, ref) => {
-  const { className, children, ...rest } = props;
+  const { className, ...rest } = props;
 
   return (
-    <svg
+    <ChevronRight
       ref={ref}
       {...rest}
-      fill="currentColor"
-      viewBox="0 0 24 44"
-      preserveAspectRatio="none"
       aria-hidden="true"
       className={cn(
-        "text-primary/15 min-h-9 min-w-4 h-9 w-4 rtl:rotate-180",
+        "h-4 w-4 text-slate-300 dark:text-slate-700 rtl:rotate-180",
         className,
       )}
-    >
-      <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z"></path>
-    </svg>
+    />
   );
 });
 
-interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLDivElement> {}
+BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
+
+interface BreadcrumbItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  active?: boolean;
+}
 
 const BreadcrumbItem = React.forwardRef<HTMLDivElement, BreadcrumbItemProps>(
   (props, ref) => {
-    const { className, children, ...rest } = props;
+    const { className, children, active = false, ...rest } = props;
 
     return (
       <div
         ref={ref}
         {...rest}
         className={cn(
-          "text-primary/70 rtl:pt-0.5 hover:text-primary text-nowrap capitalize cursor-pointer transition-colors duration-200 font-medium rtl:text-4 ltr:text-xs",
+          "cursor-pointer text-nowrap font-medium capitalize transition-colors duration-200 hover:text-brand-500 dark:hover:text-brand-300 rtl:pt-0.5 rtl:text-4 ltr:text-xs",
+          active ? "text-brand-500" : "text-slate-500 dark:text-slate-400",
           className,
         )}
       >
@@ -69,11 +71,13 @@ const BreadcrumbItem = React.forwardRef<HTMLDivElement, BreadcrumbItemProps>(
   },
 );
 
+BreadcrumbItem.displayName = "BreadcrumbItem";
+
 interface BreadcrumbHomeProps extends React.SVGProps<SVGSVGElement> {}
 
 const BreadcrumbHome = React.forwardRef<SVGSVGElement, BreadcrumbHomeProps>(
   (props, ref) => {
-    const { className, children, ...rest } = props;
+    const { className, ...rest } = props;
 
     return (
       <svg
@@ -81,10 +85,8 @@ const BreadcrumbHome = React.forwardRef<SVGSVGElement, BreadcrumbHomeProps>(
         {...rest}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
-        // aria-hidden="true"
-        // data-slot="icon"
         className={cn(
-          "text-primary/60 fill-primary/60 hover:scale-105 min-w-4 min-h-4 size-4 hover:fill-primary/90 transition-[fill] duration-300 cursor-pointer",
+          "size-4 min-h-4 min-w-4 cursor-pointer fill-slate-400 text-slate-400 transition-all duration-300 hover:scale-105 hover:fill-brand-500 hover:text-brand-500 dark:fill-slate-500 dark:text-slate-500 dark:hover:fill-brand-300 dark:hover:text-brand-300",
           className,
         )}
       >
@@ -97,5 +99,7 @@ const BreadcrumbHome = React.forwardRef<SVGSVGElement, BreadcrumbHomeProps>(
     );
   },
 );
+
+BreadcrumbHome.displayName = "BreadcrumbHome";
 
 export { Breadcrumb, BreadcrumbSeparator, BreadcrumbItem, BreadcrumbHome };
